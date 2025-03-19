@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useCrm, Client, Appointment } from '@/context/CrmContext';
 import MeasurementForm from './MeasurementForm';
+import BodyAreaVisualization from './BodyAreaVisualization';
 
 interface ClientDetailsProps {
   client: Client;
@@ -361,6 +362,11 @@ const ClientDetails: React.FC<ClientDetailsProps> = ({ client }) => {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Body Area Visualization */}
+      {client.measurements.length > 0 && (
+        <BodyAreaVisualization client={client} />
+      )}
       
       {/* Measurement Form Dialog */}
       <MeasurementForm
