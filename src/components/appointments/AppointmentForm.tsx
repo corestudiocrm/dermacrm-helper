@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -35,7 +34,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { useCrm, Appointment } from '@/context/CrmContext';
+import { useCrm, Appointment, Treatment, Doctor } from '@/context/CrmContext';
 
 // Define the form schema
 const appointmentFormSchema = z.object({
@@ -148,8 +147,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment }) => {
         ...appointment,
         clientId: data.clientId,
         date: appointmentDate,
-        treatment: data.treatment,
-        doctor: data.doctor,
+        treatment: data.treatment as Treatment,
+        doctor: data.doctor as Doctor,
         notes: data.notes || '',
       });
       navigate(`/appointments/${appointment.id}`);
@@ -157,8 +156,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment }) => {
       addAppointment({
         clientId: data.clientId,
         date: appointmentDate,
-        treatment: data.treatment,
-        doctor: data.doctor,
+        treatment: data.treatment as Treatment,
+        doctor: data.doctor as Doctor,
         notes: data.notes || '',
       });
       navigate('/appointments');

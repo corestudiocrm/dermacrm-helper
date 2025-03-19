@@ -86,7 +86,13 @@ const MeasurementForm: React.FC<MeasurementFormProps> = ({
 
   // Form submission handler
   const onSubmit = (data: MeasurementFormValues) => {
-    addMeasurement(clientId, data);
+    // Cast string values to the proper types for the context API
+    addMeasurement(clientId, {
+      area: data.area as BodyArea,
+      size: data.size,
+      treatment: data.treatment as Treatment,
+      date: data.date
+    });
     onOpenChange(false);
     form.reset();
   };

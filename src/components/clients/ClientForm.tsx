@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -36,7 +35,7 @@ const clientFormSchema = z.object({
   }),
   phone: z.string().min(1, { message: 'Il telefono è obbligatorio' }),
   email: z.string().email({ message: 'Email non valida' }).optional().or(z.literal('')),
-  address: z.string().optional(),
+  address: z.string().min(1, { message: "L'indirizzo è obbligatorio" }),
   medicalNotes: z.string().optional(),
 });
 
@@ -83,8 +82,15 @@ const ClientForm: React.FC<ClientFormProps> = ({ client, onClientSaved }) => {
         navigate(`/clients/${client.id}`);
       }
     } else {
+      // Ensure all required fields are present for addClient
       const newClientData = {
-        ...data,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        birthDate: data.birthDate,
+        phone: data.phone,
+        email: data.email || '',
+        address: data.address,
+        medicalNotes: data.medicalNotes || '',
       };
       
       addClient(newClientData);

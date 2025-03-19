@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
@@ -30,16 +29,21 @@ import AppointmentForm from '@/components/appointments/AppointmentForm';
 import { useCrm } from '@/context/CrmContext';
 
 const Appointments: React.FC = () => {
-  const { id, action } = useParams();
+  const { id } = useParams();
+  const location = useLocation();
   const { appointments, getClient, deleteAppointment, sendWhatsAppReminder } = useCrm();
   const navigate = useNavigate();
+  
+  // Parse the path to determine action
+  const isNewPath = location.pathname.includes('/appointments/new');
+  const isEditPath = location.pathname.includes('/edit');
   
   const appointment = id 
     ? appointments.find(a => a.id === id) 
     : undefined;
   
   // Redirect if appointment not found
-  if (id && !appointment && action !== 'new') {
+  if (id && !appointment && !isNewPath && !isEditPath) {
     navigate('/appointments');
     return null;
   }
@@ -67,7 +71,7 @@ const Appointments: React.FC = () => {
   return (
     <PageTransition>
       <div className="space-y-6">
-        {!id ? (
+        {!id && !isNewPath ? (
           // Appointments list
           <>
             <div>
@@ -78,7 +82,7 @@ const Appointments: React.FC = () => {
             </div>
             <AppointmentsList />
           </>
-        ) : action === 'new' ? (
+        ) : isNewPath ? (
           // New appointment form
           <>
             <div>
@@ -89,7 +93,7 @@ const Appointments: React.FC = () => {
             </div>
             <AppointmentForm />
           </>
-        ) : action === 'edit' ? (
+        ) : isEditPath ? (
           // Edit appointment form
           <>
             <div>

@@ -5,12 +5,10 @@ import { useCrm } from '@/context/CrmContext';
 import PageTransition from '@/components/layout/PageTransition';
 import ClientDetails from '@/components/clients/ClientDetails';
 
-interface ClientParams {
-  id: string;
-}
-
 const ClientDetail: React.FC = () => {
-  const { id } = useParams<ClientParams>();
+  // TypeScript requires a Record<string, string | undefined> for useParams()
+  const params = useParams<{ id: string }>();
+  const id = params.id;
   const { getClient } = useCrm();
   const navigate = useNavigate();
   
