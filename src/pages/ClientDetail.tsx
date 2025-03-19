@@ -5,8 +5,12 @@ import { useCrm } from '@/context/CrmContext';
 import PageTransition from '@/components/layout/PageTransition';
 import ClientDetails from '@/components/clients/ClientDetails';
 
+interface ClientParams {
+  id: string;
+}
+
 const ClientDetail: React.FC = () => {
-  const { id } = useParams();
+  const { id } = useParams<ClientParams>();
   const { getClient } = useCrm();
   const navigate = useNavigate();
   

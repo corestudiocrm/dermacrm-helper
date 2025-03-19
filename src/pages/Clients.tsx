@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useCrm } from '@/context/CrmContext';
 import { 
   Card, 
@@ -15,14 +15,19 @@ import ClientForm from '@/components/clients/ClientForm';
 import ClientDetails from '@/components/clients/ClientDetails';
 
 const Clients: React.FC = () => {
-  const { id, action } = useParams();
+  const { id } = useParams();
+  const location = useLocation();
   const { clients, getClient } = useCrm();
   const navigate = useNavigate();
   
+  // Parse the path to determine action
+  const isNewPath = location.pathname.includes('/clients/new');
+  const isEditPath = location.pathname.includes('/edit');
+  
   const client = id ? getClient(id) : undefined;
   
-  // Redirect if client not found
-  if (id && !client && action !== 'new') {
+  // Redirect if client not found (except for "new" path)
+  if (id && !client && !isNewPath) {
     navigate('/clients');
     return null;
   }
@@ -30,7 +35,7 @@ const Clients: React.FC = () => {
   return (
     <PageTransition>
       <div className="space-y-6">
-        {!id ? (
+        {!id && !isNewPath ? (
           // Client list
           <>
             <div>
@@ -41,7 +46,7 @@ const Clients: React.FC = () => {
             </div>
             <ClientsList />
           </>
-        ) : action === 'new' ? (
+        ) : isNewPath ? (
           // New client form
           <>
             <div>
@@ -62,7 +67,7 @@ const Clients: React.FC = () => {
               </CardContent>
             </Card>
           </>
-        ) : action === 'edit' ? (
+        ) : isEditPath ? (
           // Edit client form
           <>
             <div>

@@ -12,6 +12,7 @@ import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import Index from "./pages/Index";
 import Clients from "./pages/Clients";
+import ClientDetail from "./pages/ClientDetail";
 import Appointments from "./pages/Appointments";
 import NotFound from "./pages/NotFound";
 
@@ -40,13 +41,13 @@ const App = () => {
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/clients" element={<Clients />} />
-                        <Route path="/clients/:id" element={<Clients />} />
-                        <Route path="/clients/new" element={<Clients action="new" />} />
-                        <Route path="/clients/edit/:id" element={<Clients action="edit" />} />
+                        <Route path="/clients/:id" element={<ClientDetail />} />
+                        <Route path="/clients/new" element={<Clients />} />
+                        <Route path="/clients/edit/:id" element={<Clients />} />
                         <Route path="/appointments" element={<Appointments />} />
                         <Route path="/appointments/:id" element={<Appointments />} />
-                        <Route path="/appointments/new" element={<Appointments action="new" />} />
-                        <Route path="/appointments/edit/:id" element={<Appointments action="edit" />} />
+                        <Route path="/appointments/new" element={<Appointments />} />
+                        <Route path="/appointments/edit/:id" element={<Appointments />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </AnimatePresence>

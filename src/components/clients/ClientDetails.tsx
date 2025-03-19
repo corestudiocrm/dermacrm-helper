@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { 
   User, Edit, Calendar, Phone, Mail, MapPin, FileText, 
-  Trash2, SquareRuler, Plus, MessageSquare
+  Trash2, Ruler, Plus, MessageSquare
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -191,7 +191,7 @@ const ClientDetails: React.FC<ClientDetailsProps> = ({ client }) => {
           <CardContent>
             {client.measurements.length === 0 ? (
               <div className="text-center py-6">
-                <SquareRuler className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                <Ruler className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">
                   Nessuna misurazione registrata
                 </p>
