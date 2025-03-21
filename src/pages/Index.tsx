@@ -8,7 +8,9 @@ import {
   ChevronRight, 
   User, 
   CalendarPlus, 
-  UserPlus 
+  UserPlus,
+  BarChart3,
+  TrendingUp
 } from 'lucide-react';
 import { format, addDays, isPast, isSameDay } from 'date-fns';
 
@@ -16,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCrm } from '@/context/CrmContext';
 import PageTransition from '@/components/layout/PageTransition';
+import DashboardCharts from '@/components/dashboard/DashboardCharts';
 
 const Index: React.FC = () => {
   const { clients, appointments, getClient } = useCrm();
@@ -39,17 +42,38 @@ const Index: React.FC = () => {
   return (
     <PageTransition>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Benvenuto nel CRM dello studio dermatologico
-          </p>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
+              Benvenuto nel CRM dello studio dermatologico
+            </p>
+          </div>
+          <div className="flex space-x-2">
+            <Button 
+              onClick={() => navigate('/clients/new')}
+              className="bg-derma-600 hover:bg-derma-700"
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              Nuovo cliente
+            </Button>
+            <Button 
+              onClick={() => navigate('/appointments/new')}
+              className="bg-derma-600 hover:bg-derma-700"
+            >
+              <CalendarPlus className="mr-2 h-4 w-4" />
+              Nuovo appuntamento
+            </Button>
+          </div>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Clienti</CardTitle>
+              <CardTitle className="flex items-center text-lg font-medium">
+                <UsersIcon className="mr-2 h-5 w-5 text-derma-600" />
+                Clienti
+              </CardTitle>
               <CardDescription>Gestione anagrafica clienti</CardDescription>
             </CardHeader>
             <CardContent>
@@ -70,9 +94,12 @@ const Index: React.FC = () => {
             </CardFooter>
           </Card>
           
-          <Card>
+          <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Appuntamenti</CardTitle>
+              <CardTitle className="flex items-center text-lg font-medium">
+                <Calendar className="mr-2 h-5 w-5 text-derma-600" />
+                Appuntamenti
+              </CardTitle>
               <CardDescription>Gestione appuntamenti</CardDescription>
             </CardHeader>
             <CardContent>
@@ -93,35 +120,44 @@ const Index: React.FC = () => {
             </CardFooter>
           </Card>
           
-          <Card className="md:col-span-2 lg:col-span-1">
+          <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Azioni rapide</CardTitle>
-              <CardDescription>Operazioni frequenti</CardDescription>
+              <CardTitle className="flex items-center text-lg font-medium">
+                <BarChart3 className="mr-2 h-5 w-5 text-derma-600" />
+                Performance
+              </CardTitle>
+              <CardDescription>Riepilogo attività</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Button 
-                variant="outline" 
-                className="w-full justify-start"
-                onClick={() => navigate('/clients/new')}
-              >
-                <UserPlus className="mr-2 h-4 w-4" />
-                Aggiungi nuovo cliente
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="w-full justify-start"
-                onClick={() => navigate('/appointments/new')}
-              >
-                <CalendarPlus className="mr-2 h-4 w-4" />
-                Programma nuovo appuntamento
-              </Button>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-6 w-6 text-emerald-500" />
+                <div className="text-3xl font-bold">{Math.round((appointments.length / clients.length) * 100)}%</div>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Tasso di appuntamenti per cliente
+              </p>
             </CardContent>
+            <CardFooter className="pb-4">
+              <Button 
+                variant="ghost" 
+                className="w-full text-derma-700 hover:text-derma-800 hover:bg-derma-50"
+                onClick={() => navigate('/clients')}
+              >
+                Analizza clienti
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
+            </CardFooter>
           </Card>
         </div>
         
+        {/* Charts section */}
+        <div className="my-8">
+          <h2 className="text-xl font-semibold mb-4">Analisi e statistiche</h2>
+          <DashboardCharts />
+        </div>
+        
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="col-span-1">
+          <Card className="col-span-1 hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg font-medium">
                 <Clock className="mr-2 h-5 w-5 text-derma-600" />
@@ -150,11 +186,11 @@ const Index: React.FC = () => {
                     return (
                       <div 
                         key={appointment.id}
-                        className="flex items-center justify-between p-3 rounded-md border cursor-pointer hover:shadow-sm transition-shadow"
+                        className="flex items-center justify-between p-3 rounded-md border cursor-pointer hover:shadow-sm transition-shadow bg-white"
                         onClick={() => navigate(`/appointments/${appointment.id}`)}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="min-w-[44px] text-center">
+                          <div className="min-w-[44px] h-10 flex flex-col items-center justify-center rounded-md bg-derma-50 text-derma-700">
                             <div className="text-sm font-medium">
                               {format(new Date(appointment.date), "HH:mm")}
                             </div>
@@ -192,7 +228,7 @@ const Index: React.FC = () => {
             )}
           </Card>
           
-          <Card className="col-span-1">
+          <Card className="col-span-1 hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg font-medium">
                 <Calendar className="mr-2 h-5 w-5 text-derma-600" />
@@ -227,11 +263,11 @@ const Index: React.FC = () => {
                     return (
                       <div 
                         key={appointment.id}
-                        className="flex items-center justify-between p-3 rounded-md border cursor-pointer hover:shadow-sm transition-shadow"
+                        className="flex items-center justify-between p-3 rounded-md border cursor-pointer hover:shadow-sm transition-shadow bg-white"
                         onClick={() => navigate(`/appointments/${appointment.id}`)}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="min-w-[44px] text-center">
+                          <div className="min-w-[44px] h-10 flex flex-col items-center justify-center rounded-md bg-derma-50 text-derma-700">
                             <div className="text-xs text-muted-foreground">
                               {isUpcomingDays 
                                 ? format(new Date(appointment.date), "EEE") 
