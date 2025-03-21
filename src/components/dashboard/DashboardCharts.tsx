@@ -1,6 +1,5 @@
-
 import React, { useMemo } from 'react';
-import { format, startOfWeek, addDays, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval } from 'date-fns';
+import { format, startOfWeek, addDays, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { 
   BarChart, 
@@ -10,8 +9,6 @@ import {
   XAxis, 
   YAxis, 
   CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
   PieChart,
   Pie,
   Cell
@@ -246,9 +243,12 @@ const DashboardCharts: React.FC = () => {
                   content={
                     <ChartTooltipContent 
                       labelFormatter={(label) => {
-                        const treatment = label.toLowerCase();
-                        const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
-                        return config ? config.label : label;
+                        if (label) {
+                          const treatment = label.toString().toLowerCase();
+                          const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
+                          return config ? config.label : label;
+                        }
+                        return label;
                       }}
                     />
                   }
@@ -281,8 +281,11 @@ const DashboardCharts: React.FC = () => {
                   content={
                     <ChartTooltipContent 
                       labelFormatter={(label) => {
-                        const config = doctorConfig[label as keyof typeof doctorConfig];
-                        return config ? config.label : label;
+                        if (label) {
+                          const config = doctorConfig[label.toString() as keyof typeof doctorConfig];
+                          return config ? config.label : label;
+                        }
+                        return label;
                       }}
                     />
                   }
