@@ -1,4 +1,3 @@
-
 // Define types
 export type Treatment = 
   'Laser' | 
@@ -8,7 +7,11 @@ export type Treatment =
   'Filler' | 
   'Mesotherapy' | 
   'Consultation' | 
-  'Follow-up';
+  'Follow-up' |
+  'Hydrafacial' |
+  'IPL' |
+  'Microneedling' |
+  'LED Therapy';
 
 export type Doctor = 
   'Dr. Rossi' | 
