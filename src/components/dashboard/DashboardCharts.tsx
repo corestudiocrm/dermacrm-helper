@@ -282,8 +282,11 @@ const DashboardCharts: React.FC = () => {
                 </Pie>
                 <Tooltip
                   formatter={(value, name) => {
-                    const treatment = name.toLowerCase();
-                    const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
+                    // Fix: Check if name is a string before using toLowerCase
+                    const treatment = typeof name === 'string' ? name.toLowerCase() : name;
+                    const config = typeof treatment === 'string' ? 
+                      appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig] : 
+                      undefined;
                     return [value, config ? config.label : name];
                   }}
                   contentStyle={{
@@ -296,8 +299,11 @@ const DashboardCharts: React.FC = () => {
                 />
                 <Legend
                   formatter={(value) => {
-                    const treatment = value.toLowerCase();
-                    const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
+                    // Fix: Check if value is a string before using toLowerCase
+                    const treatment = typeof value === 'string' ? value.toLowerCase() : value;
+                    const config = typeof treatment === 'string' ? 
+                      appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig] : 
+                      undefined;
                     return config ? config.label : value;
                   }}
                   layout="horizontal"
@@ -323,7 +329,10 @@ const DashboardCharts: React.FC = () => {
                 <XAxis 
                   dataKey="name" 
                   tickFormatter={(value) => {
-                    const config = doctorConfig[value as keyof typeof doctorConfig];
+                    // Fix: Check if value is a string before trying to access config
+                    const config = typeof value === 'string' ? 
+                      doctorConfig[value as keyof typeof doctorConfig] : 
+                      undefined;
                     return config ? config.label : value;
                   }}
                   stroke="#888888" 
@@ -335,7 +344,10 @@ const DashboardCharts: React.FC = () => {
                 <Tooltip
                   formatter={(value) => [`${value}`, 'Appuntamenti']}
                   labelFormatter={(label) => {
-                    const config = doctorConfig[label.toString() as keyof typeof doctorConfig];
+                    // Fix: Check if label is a string before trying to access config
+                    const config = typeof label === 'string' ? 
+                      doctorConfig[label as keyof typeof doctorConfig] : 
+                      undefined;
                     return config ? config.label : label;
                   }}
                   contentStyle={{
