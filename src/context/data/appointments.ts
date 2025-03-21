@@ -288,5 +288,5 @@ export const additionalAppointments: Appointment[] = [
   }
 ];
 
-// Add
-
+// Merge all appointments for export
+export const mergedAppointments = [...sampleAppointments, ...additionalAppointments];
