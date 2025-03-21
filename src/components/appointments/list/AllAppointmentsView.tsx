@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Appointment } from '@/context/types';
 import AppointmentCard from './AppointmentCard';
 import { useCrm } from '@/context/CrmContext';
