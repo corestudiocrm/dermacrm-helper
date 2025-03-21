@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -54,6 +53,17 @@ const ClientTabContent: React.FC<ClientTabContentProps> = ({ activeTab, client }
       paid: Math.random() > 0.5,
       description: 'Trattamento estetico'
     });
+  };
+
+  // Toggle invoice payment status
+  const toggleInvoicePayment = (invoiceId: string, currentStatus: boolean) => {
+    const clientInvoice = client.invoices?.find(inv => inv.id === invoiceId);
+    if (clientInvoice) {
+      updateInvoice(client.id, {
+        ...clientInvoice,
+        paid: !currentStatus
+      });
+    }
   };
 
   // Example consent for demo
@@ -231,11 +241,15 @@ const ClientTabContent: React.FC<ClientTabContentProps> = ({ activeTab, client }
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <span>€{invoice.amount.toFixed(2)}</span>
-                        {invoice.paid ? (
-                          <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">Pagata</Badge>
-                        ) : (
-                          <Badge variant="outline" className="bg-amber-100 text-amber-800 hover:bg-amber-100">Da pagare</Badge>
-                        )}
+                        <Badge 
+                          variant="outline" 
+                          className={invoice.paid 
+                            ? "bg-green-100 text-green-800 hover:bg-green-100 cursor-pointer" 
+                            : "bg-amber-100 text-amber-800 hover:bg-amber-100 cursor-pointer"}
+                          onClick={() => toggleInvoicePayment(invoice.id, invoice.paid)}
+                        >
+                          {invoice.paid ? 'Pagata' : 'Da pagare'}
+                        </Badge>
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
