@@ -10,7 +10,7 @@ const DashboardCharts: React.FC = () => {
   const { appointments, treatments } = useCrm();
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
       <Card className="col-span-1">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-medium">Trend degli appuntamenti</CardTitle>

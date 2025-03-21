@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
+  // Setting sidebar closed by default
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

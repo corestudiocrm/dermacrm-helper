@@ -31,11 +31,11 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
             <Button 
               variant="ghost" 
               size="icon"
-              className="mr-2 md:hidden"
+              className="mr-2"
               onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
             >
               <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle sidebar</span>
             </Button>
             
             <NavLink to="/" className="flex items-center">
