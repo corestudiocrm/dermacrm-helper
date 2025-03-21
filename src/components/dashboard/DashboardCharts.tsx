@@ -24,10 +24,10 @@ const DashboardCharts: React.FC = () => {
       <Card className="col-span-1">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-medium">Distribuzione trattamenti</CardTitle>
-          <CardDescription>Tipologie di trattamenti eseguiti</CardDescription>
+          <CardDescription>Tipologie di trattamenti più frequenti</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center">
-          <div className="h-[300px] w-full">
+          <div className="h-[320px] w-full">
             <TreatmentDistributionChart 
               appointments={appointments} 
               treatments={treatments} 

@@ -9,7 +9,7 @@ import {
   Legend
 } from 'recharts';
 import { Treatment, Appointment } from '@/context/types';
-import { COLORS, appointmentTypesConfig } from './config';
+import { COLORS } from './config';
 
 interface TreatmentDistributionChartProps {
   appointments: Appointment[];
@@ -22,53 +22,87 @@ const TreatmentDistributionChart: React.FC<TreatmentDistributionChartProps> = ({
 }) => {
   // Data for appointment types distribution
   const appointmentTypesData = useMemo(() => {
+    // Create a map to count treatments
     const counts: Record<string, number> = {};
     
+    // Initialize all treatment types with zero
     treatments.forEach(treatment => {
-      // Initialize each treatment type
-      counts[treatment.toLowerCase().replace(' ', '')] = 0;
+      counts[treatment] = 0;
     });
     
+    // Count occurrences of each treatment
     appointments.forEach(appointment => {
-      const type = appointment.treatment.toLowerCase().replace(' ', '');
+      const type = appointment.treatment;
       if (counts[type] !== undefined) {
         counts[type]++;
+      } else {
+        // Handle treatments that might not be in the predefined list
+        counts[type] = (counts[type] || 0) + 1;
       }
     });
     
-    return Object.keys(counts).map(key => ({
-      name: key,
-      value: counts[key],
-      label: key
-    }));
+    // Convert to array format for Recharts and filter out zero counts
+    return Object.entries(counts)
+      .filter(([_, count]) => count > 0)
+      .map(([name, value], index) => ({
+        name,
+        value,
+        fill: COLORS[index % COLORS.length]
+      }))
+      .sort((a, b) => b.value - a.value); // Sort by frequency, most frequent first
   }, [appointments, treatments]);
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
+  // Custom tooltip for the pie chart
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white p-2 border border-gray-200 rounded-md shadow-md">
+          <p className="font-medium">{data.name}</p>
+          <p className="text-sm">
+            <span className="font-medium">{data.value}</span> appuntamenti
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {((data.value / appointments.length) * 100).toFixed(1)}% del totale
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Render a custom label inside the pie slices for larger segments
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }: any) => {
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     
-    if (percent < 0.05) return null;
-    
-    // Check if name is a string before using toLowerCase
-    const treatment = typeof name === 'string' ? name.toLowerCase() : String(name);
-    const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
-    const displayName = config ? config.label : name;
+    // Only show labels for segments that are at least 8% of the total
+    if (percent < 0.08) return null;
     
     return (
       <text 
         x={x} 
         y={y} 
-        fill="#fff" 
-        textAnchor={x > cx ? 'start' : 'end'} 
+        fill="#ffffff" 
+        textAnchor="middle" 
         dominantBaseline="central"
         fontSize={12}
+        fontWeight={500}
       >
-        {`${displayName} ${(percent * 100).toFixed(0)}%`}
+        {`${(percent * 100).toFixed(0)}%`}
       </text>
     );
   };
+
+  if (appointmentTypesData.length === 0) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <p className="text-muted-foreground">Nessun dato disponibile</p>
+      </div>
+    );
+  }
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -79,44 +113,31 @@ const TreatmentDistributionChart: React.FC<TreatmentDistributionChartProps> = ({
           cy="50%"
           labelLine={false}
           label={renderCustomizedLabel}
-          outerRadius={100}
+          outerRadius={({ chartWidth, chartHeight }) => Math.min(chartWidth, chartHeight) * 0.35}
+          innerRadius={({ chartWidth, chartHeight }) => Math.min(chartWidth, chartHeight) * 0.2}
           fill="#8884d8"
           dataKey="value"
           nameKey="name"
+          paddingAngle={2}
         >
           {appointmentTypesData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell 
+              key={`cell-${index}`} 
+              fill={COLORS[index % COLORS.length]} 
+              stroke="white"
+              strokeWidth={1}
+            />
           ))}
         </Pie>
-        <Tooltip
-          formatter={(value, name) => {
-            // Check if name is a string before using toLowerCase
-            const treatment = typeof name === 'string' ? name.toLowerCase() : String(name);
-            const config = typeof treatment === 'string' ? 
-              appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig] : 
-              undefined;
-            return [value, config ? config.label : name];
-          }}
-          contentStyle={{
-            backgroundColor: 'white',
-            border: '1px solid #f1f1f1',
-            borderRadius: '6px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            fontSize: '12px'
-          }}
-        />
-        <Legend
-          formatter={(value) => {
-            // Check if value is a string before using toLowerCase
-            const treatment = typeof value === 'string' ? value.toLowerCase() : String(value);
-            const config = typeof treatment === 'string' ? 
-              appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig] : 
-              undefined;
-            return config ? config.label : value;
-          }}
-          layout="horizontal"
-          verticalAlign="bottom"
+        <Tooltip content={<CustomTooltip />} />
+        <Legend 
+          layout="horizontal" 
+          verticalAlign="bottom" 
           align="center"
+          formatter={(value) => <span className="text-xs font-medium">{value}</span>}
+          iconSize={8}
+          iconType="circle"
+          wrapperStyle={{ paddingTop: 10 }}
         />
       </PieChart>
     </ResponsiveContainer>
