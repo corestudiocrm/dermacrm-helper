@@ -43,6 +43,32 @@ export interface Appointment {
   notes: string;
 }
 
+export interface Attachment {
+  id: string;
+  name: string;
+  type: string;
+  url: string;
+  date: Date;
+}
+
+export interface Invoice {
+  id: string;
+  number: string;
+  date: Date;
+  amount: number;
+  paid: boolean;
+  description: string;
+}
+
+export interface Consent {
+  id: string;
+  name: string;
+  signed: boolean;
+  date: Date;
+  expiryDate?: Date;
+  documentUrl?: string;
+}
+
 export interface Client {
   id: string;
   firstName: string;
@@ -53,6 +79,10 @@ export interface Client {
   address: string;
   medicalNotes: string;
   measurements: Measurement[];
+  avatarUrl?: string;
+  attachments?: Attachment[];
+  invoices?: Invoice[];
+  consents?: Consent[];
 }
 
 // Context interface
@@ -74,4 +104,13 @@ export interface CrmContextType {
   doctors: readonly Doctor[];
   bodyAreas: readonly BodyArea[];
   sendWhatsAppReminder: (clientId: string, appointmentId: string) => void;
+  uploadClientAvatar: (clientId: string, file: File) => Promise<void>;
+  uploadAttachment: (clientId: string, file: File, name?: string) => Promise<void>;
+  deleteAttachment: (clientId: string, attachmentId: string) => void;
+  addInvoice: (clientId: string, invoice: Omit<Invoice, 'id'>) => void;
+  updateInvoice: (clientId: string, invoice: Invoice) => void;
+  deleteInvoice: (clientId: string, invoiceId: string) => void;
+  addConsent: (clientId: string, consent: Omit<Consent, 'id'>) => void;
+  updateConsent: (clientId: string, consent: Consent) => void;
+  deleteConsent: (clientId: string, consentId: string) => void;
 }

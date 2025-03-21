@@ -9,7 +9,10 @@ import {
   Treatment, 
   Doctor, 
   BodyArea, 
-  Measurement 
+  Measurement,
+  Attachment,
+  Invoice,
+  Consent
 } from './types';
 
 // Import sample data
@@ -60,7 +63,16 @@ export const CrmProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     getClient,
     addMeasurement,
     updateMeasurement,
-    deleteMeasurement
+    deleteMeasurement,
+    uploadClientAvatar,
+    uploadAttachment,
+    deleteAttachment,
+    addInvoice,
+    updateInvoice,
+    deleteInvoice,
+    addConsent,
+    updateConsent,
+    deleteConsent
   } = createClientFunctions(clients, setClients, setAppointments);
 
   // Initialize appointment functions
@@ -89,7 +101,16 @@ export const CrmProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     treatments,
     doctors,
     bodyAreas,
-    sendWhatsAppReminder
+    sendWhatsAppReminder,
+    uploadClientAvatar,
+    uploadAttachment,
+    deleteAttachment,
+    addInvoice,
+    updateInvoice,
+    deleteInvoice,
+    addConsent,
+    updateConsent,
+    deleteConsent
   };
 
   return <CrmContext.Provider value={value}>{children}</CrmContext.Provider>;
@@ -111,6 +132,9 @@ export type {
   Treatment, 
   Doctor, 
   BodyArea, 
-  Measurement, 
+  Measurement,
+  Attachment,
+  Invoice,
+  Consent,
   CrmContextType 
 };
