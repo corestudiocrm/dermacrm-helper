@@ -1,4 +1,3 @@
-
 import { Appointment } from '../types';
 
 // Sample appointments
@@ -289,5 +288,5 @@ export const additionalAppointments: Appointment[] = [
   }
 ];
 
-// Combine all appointments
-export const mergedAppointments: Appointment[] = [...sampleAppointments, ...additionalAppointments];
+// Add
+

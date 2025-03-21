@@ -1,4 +1,3 @@
-
 import { Client } from '../types';
 
 // Sample client data
@@ -472,299 +471,382 @@ export const sampleClients: Client[] = [
   }
 ];
 
-// Add the remaining clients
-export const additionalClients: Client[] = [
+// Add 20 new clients (10 with appointments and 10 with invoices)
+export const additionalClients = [
+  // Clients with appointments
   {
-    id: '16',
+    id: '101',
+    firstName: 'Marco',
+    lastName: 'Bianchi',
+    birthDate: new Date(1985, 5, 15),
+    phone: '333 123 4567',
+    email: 'marco.bianchi@example.com',
+    address: 'Via Roma 123, Milano',
+    medicalNotes: 'Pelle sensibile, evitare trattamenti aggressivi',
+    measurements: [],
+    attachments: [],
+    invoices: [],
+    consents: []
+  },
+  {
+    id: '102',
+    firstName: 'Giulia',
+    lastName: 'Rossi',
+    birthDate: new Date(1990, 3, 22),
+    phone: '334 765 4321',
+    email: 'giulia.rossi@example.com',
+    address: 'Via Garibaldi 45, Roma',
+    medicalNotes: 'Allergia a nichel',
+    measurements: [],
+    attachments: [],
+    invoices: [],
+    consents: []
+  },
+  {
+    id: '103',
     firstName: 'Luca',
-    lastName: 'Conti',
-    birthDate: new Date(1988, 11, 3),
-    phone: '+39 333 6677889',
-    email: 'luca.conti@example.com',
-    address: 'Via Genova 34, Torino',
-    medicalNotes: 'Nessuna allergia. Cicatrici post-traumatiche zona zigomi.',
-    measurements: [
-      {
-        id: 'm11',
-        area: 'Face',
-        size: 5,
-        treatment: 'Laser',
-        date: new Date(2023, 7, 25)
-      }
-    ],
-    invoices: [
-      {
-        id: 'inv25',
-        number: '2023/025',
-        date: new Date(2023, 7, 28),
-        amount: 320,
-        paid: true,
-        description: 'Trattamento laser cicatrici viso - prima sessione'
-      },
-      {
-        id: 'inv26',
-        number: '2023/032',
-        date: new Date(2023, 9, 15),
-        amount: 320,
-        paid: true,
-        description: 'Trattamento laser cicatrici viso - seconda sessione'
-      }
-    ]
+    lastName: 'Verdi',
+    birthDate: new Date(1978, 8, 10),
+    phone: '335 987 6543',
+    email: 'luca.verdi@example.com',
+    address: 'Corso Italia 67, Torino',
+    medicalNotes: 'Cicatrici da acne sul viso',
+    measurements: [],
+    attachments: [],
+    invoices: [],
+    consents: []
   },
   {
-    id: '17',
+    id: '104',
     firstName: 'Chiara',
+    lastName: 'Neri',
+    birthDate: new Date(1995, 1, 28),
+    phone: '336 567 8901',
+    email: 'chiara.neri@example.com',
+    address: 'Piazza Duomo 12, Milano',
+    medicalNotes: 'Pelle mista con tendenza a rossore',
+    measurements: [],
+    attachments: [],
+    invoices: [],
+    consents: []
+  },
+  {
+    id: '105',
+    firstName: 'Andrea',
+    lastName: 'Moretti',
+    birthDate: new Date(1982, 7, 5),
+    phone: '337 345 6789',
+    email: 'andrea.moretti@example.com',
+    address: 'Via Dante 89, Bologna',
+    medicalNotes: 'Macchie solari sul viso',
+    measurements: [],
+    attachments: [],
+    invoices: [],
+    consents: []
+  },
+  {
+    id: '106',
+    firstName: 'Valentina',
     lastName: 'Ricci',
-    birthDate: new Date(1982, 4, 20),
-    phone: '+39 333 1122335',
-    email: 'chiara.ricci@example.com',
-    address: 'Via Venezia 56, Padova',
-    medicalNotes: 'Rosacea di tipo 1. Pelle sensibile e reattiva.',
+    birthDate: new Date(1988, 11, 18),
+    phone: '338 234 5678',
+    email: 'valentina.ricci@example.com',
+    address: 'Corso Vittorio 34, Firenze',
+    medicalNotes: 'Rughe precoci',
     measurements: [],
-    invoices: [
-      {
-        id: 'inv27',
-        number: '2023/026',
-        date: new Date(2023, 8, 5),
-        amount: 140,
-        paid: true,
-        description: 'Consulenza specialistica rosacea'
-      },
-      {
-        id: 'inv28',
-        number: '2023/033',
-        date: new Date(2023, 10, 12),
-        amount: 220,
-        paid: false,
-        description: 'Trattamento LED terapia per rosacea'
-      }
-    ]
+    attachments: [],
+    invoices: [],
+    consents: []
   },
   {
-    id: '18',
-    firstName: 'Matteo',
-    lastName: 'Mancini',
-    birthDate: new Date(1975, 1, 15),
-    phone: '+39 333 9988775',
-    email: 'matteo.mancini@example.com',
-    address: 'Via Bologna 12, Milano',
-    medicalNotes: 'Iperpigmentazione post-infiammatoria. Fototipo IV.',
-    measurements: [
-      {
-        id: 'm12',
-        area: 'Face',
-        size: 8,
-        treatment: 'Chemical Peel',
-        date: new Date(2023, 9, 8)
-      }
-    ],
-    invoices: [
-      {
-        id: 'inv29',
-        number: '2023/027',
-        date: new Date(2023, 9, 10),
-        amount: 180,
-        paid: true,
-        description: 'Trattamento chemical peel medio per iperpigmentazione'
-      }
-    ]
-  },
-  {
-    id: '19',
-    firstName: 'Francesca',
-    lastName: 'Lombardi',
-    birthDate: new Date(1993, 6, 28),
-    phone: '+39 333 4455667',
-    email: 'francesca.lombardi@example.com',
-    address: 'Via Torino 45, Roma',
-    medicalNotes: 'Allergia a metalli pesanti. Pelle mista tendente al grasso.',
-    measurements: [
-      {
-        id: 'm13',
-        area: 'Face',
-        size: 15,
-        treatment: 'Hydrafacial',
-        date: new Date(2023, 10, 20)
-      }
-    ],
-    invoices: [
-      {
-        id: 'inv30',
-        number: '2023/028',
-        date: new Date(2023, 10, 22),
-        amount: 160,
-        paid: false,
-        description: 'Trattamento purificante pori dilatati'
-      }
-    ]
-  },
-  {
-    id: '20',
-    firstName: 'Davide',
-    lastName: 'Santoro',
-    birthDate: new Date(1987, 8, 10),
-    phone: '+39 333 7788991',
-    email: 'davide.santoro@example.com',
-    address: 'Via Roma 67, Napoli',
-    medicalNotes: 'Psoriasi lieve. Attualmente in fase di remissione.',
-    measurements: [
-      {
-        id: 'm14',
-        area: 'Legs',
-        size: 40,
-        treatment: 'Laser',
-        date: new Date(2023, 7, 15)
-      }
-    ],
-    invoices: [
-      {
-        id: 'inv31',
-        number: '2023/029',
-        date: new Date(2023, 7, 18),
-        amount: 350,
-        paid: true,
-        description: 'Trattamento laser per psoriasi gambe'
-      }
-    ]
-  },
-  {
-    id: '21',
-    firstName: 'Elisa',
-    lastName: 'Marino',
-    birthDate: new Date(1983, 3, 25),
-    phone: '+39 333 1122336',
-    email: 'elisa.marino@example.com',
-    address: 'Via Sicilia 23, Palermo',
-    medicalNotes: 'Cicatrici da acne. Pelle tendente al secco.',
-    measurements: [
-      {
-        id: 'm15',
-        area: 'Face',
-        size: 15,
-        treatment: 'Microneedling',
-        date: new Date(2023, 11, 5)
-      }
-    ],
-    invoices: [
-      {
-        id: 'inv32',
-        number: '2023/034',
-        date: new Date(2023, 11, 8),
-        amount: 250,
-        paid: false,
-        description: 'Trattamento microneedling viso'
-      }
-    ]
-  },
-  {
-    id: '22',
-    firstName: 'Antonio',
-    lastName: 'Ferrari',
-    birthDate: new Date(1979, 5, 12),
-    phone: '+39 333 6677881',
-    email: 'antonio.ferrari@example.com',
-    address: 'Via Puglia 54, Bari',
-    medicalNotes: 'Cheratosi attinica. Monitoraggio periodico consigliato.',
+    id: '107',
+    firstName: 'Roberto',
+    lastName: 'Gallo',
+    birthDate: new Date(1975, 4, 30),
+    phone: '339 876 5432',
+    email: 'roberto.gallo@example.com',
+    address: 'Via Mazzini 56, Napoli',
+    medicalNotes: 'Cicatrice sulla fronte da trattare',
     measurements: [],
-    invoices: [
-      {
-        id: 'inv33',
-        number: '2023/035',
-        date: new Date(2023, 11, 15),
-        amount: 180,
-        paid: true,
-        description: 'Valutazione dermatologica cheratosi'
-      },
-      {
-        id: 'inv34',
-        number: '2023/042',
-        date: new Date(2023, 11, 30),
-        amount: 350,
-        paid: false,
-        description: 'Trattamento per cheratosi attinica'
-      }
-    ]
+    attachments: [],
+    invoices: [],
+    consents: []
   },
   {
-    id: '23',
-    firstName: 'Maria',
-    lastName: 'Esposito',
-    birthDate: new Date(1990, 10, 8),
-    phone: '+39 333 4455669',
-    email: 'maria.esposito@example.com',
-    address: 'Via Campania 12, Napoli',
-    medicalNotes: 'Nessuna allergia nota. Macchie solari da esposizione.',
-    measurements: [
-      {
-        id: 'm16',
-        area: 'Face',
-        size: 10,
-        treatment: 'IPL',
-        date: new Date(2023, 10, 25)
-      }
-    ],
-    invoices: [
-      {
-        id: 'inv35',
-        number: '2023/036',
-        date: new Date(2023, 10, 28),
-        amount: 240,
-        paid: true,
-        description: 'Trattamento IPL macchie solari'
-      }
-    ]
+    id: '108',
+    firstName: 'Martina',
+    lastName: 'Colombo',
+    birthDate: new Date(1992, 9, 12),
+    phone: '340 123 7890',
+    email: 'martina.colombo@example.com',
+    address: 'Via Leopardi 23, Genova',
+    medicalNotes: 'Discromie cutanee',
+    measurements: [],
+    attachments: [],
+    invoices: [],
+    consents: []
   },
   {
-    id: '24',
-    firstName: 'Giovanni',
+    id: '109',
+    firstName: 'Francesco',
     lastName: 'Romano',
-    birthDate: new Date(1976, 2, 30),
-    phone: '+39 333 9988771',
-    email: 'giovanni.romano@example.com',
-    address: 'Via Lazio 45, Roma',
-    medicalNotes: 'Iperidrosi ascellare. Trattamenti precedenti con tossina botulinica.',
+    birthDate: new Date(1980, 2, 25),
+    phone: '341 567 1234',
+    email: 'francesco.romano@example.com',
+    address: 'Piazza Navona 7, Roma',
+    medicalNotes: 'Pelle grassa con tendenza acneica',
     measurements: [],
-    invoices: [
-      {
-        id: 'inv36',
-        number: '2023/037',
-        date: new Date(2023, 11, 10),
-        amount: 380,
-        paid: true,
-        description: 'Trattamento iperidrosi con tossina botulinica'
-      }
-    ]
+    attachments: [],
+    invoices: [],
+    consents: []
   },
   {
-    id: '25',
-    firstName: 'Alessia',
-    lastName: 'Martino',
-    birthDate: new Date(1984, 7, 15),
-    phone: '+39 333 1122338',
-    email: 'alessia.martino@example.com',
-    address: 'Via Umbria 67, Perugia',
-    medicalNotes: 'Teleangectasie zona zigomi. Couperose lieve.',
-    measurements: [
-      {
-        id: 'm17',
-        area: 'Face',
-        size: 5,
-        treatment: 'Laser',
-        date: new Date(2023, 11, 18)
-      }
-    ],
+    id: '110',
+    firstName: 'Elisa',
+    lastName: 'Fontana',
+    birthDate: new Date(1993, 6, 8),
+    phone: '342 890 1234',
+    email: 'elisa.fontana@example.com',
+    address: 'Viale Europa 120, Milano',
+    medicalNotes: 'Dermatite periorale',
+    measurements: [],
+    attachments: [],
+    invoices: [],
+    consents: []
+  },
+  
+  // Clients with invoices
+  {
+    id: '201',
+    firstName: 'Paolo',
+    lastName: 'Marini',
+    birthDate: new Date(1979, 1, 14),
+    phone: '343 456 7890',
+    email: 'paolo.marini@example.com',
+    address: 'Via Veneto 45, Roma',
+    medicalNotes: 'Iperpigmentazione post-infiammatoria',
+    measurements: [],
+    attachments: [],
     invoices: [
       {
-        id: 'inv37',
-        number: '2023/038',
-        date: new Date(2023, 11, 20),
-        amount: 220,
-        paid: false,
-        description: 'Trattamento laser vascolare viso'
+        id: 'inv-101',
+        number: 'F2023-101',
+        date: new Date(2023, 10, 5),
+        amount: 120.00,
+        paid: true,
+        description: 'Consulenza dermatologica iniziale'
       }
-    ]
+    ],
+    consents: []
+  },
+  {
+    id: '202',
+    firstName: 'Alessia',
+    lastName: 'Conti',
+    birthDate: new Date(1987, 8, 20),
+    phone: '344 567 8901',
+    email: 'alessia.conti@example.com',
+    address: 'Corso Umberto 78, Napoli',
+    medicalNotes: 'Rosacea moderata',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-102',
+        number: 'F2023-102',
+        date: new Date(2023, 10, 8),
+        amount: 250.00,
+        paid: true,
+        description: 'Trattamento laser rosacea - Sessione 1'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '203',
+    firstName: 'Simone',
+    lastName: 'Ferretti',
+    birthDate: new Date(1983, 3, 11),
+    phone: '345 678 9012',
+    email: 'simone.ferretti@example.com',
+    address: 'Via Marconi 34, Bologna',
+    medicalNotes: 'Cheratosi attinica sul viso',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-103',
+        number: 'F2023-103',
+        date: new Date(2023, 10, 12),
+        amount: 180.00,
+        paid: false,
+        description: 'Trattamento cheratosi attinica'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '204',
+    firstName: 'Laura',
+    lastName: 'Martelli',
+    birthDate: new Date(1991, 5, 29),
+    phone: '346 789 0123',
+    email: 'laura.martelli@example.com',
+    address: 'Viale Monza 56, Milano',
+    medicalNotes: 'Cicatrici da varicella',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-104',
+        number: 'F2023-104',
+        date: new Date(2023, 10, 15),
+        amount: 320.00,
+        paid: true,
+        description: 'Trattamento microneedling - Pacchetto 3 sessioni'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '205',
+    firstName: 'Davide',
+    lastName: 'Vitali',
+    birthDate: new Date(1976, 10, 3),
+    phone: '347 890 1234',
+    email: 'davide.vitali@example.com',
+    address: 'Via Torino 89, Torino',
+    medicalNotes: 'Fototipo III, con lentiggini',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-105',
+        number: 'F2023-105',
+        date: new Date(2023, 10, 18),
+        amount: 150.00,
+        paid: true,
+        description: 'Peeling viso'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '206',
+    firstName: 'Marta',
+    lastName: 'Santoro',
+    birthDate: new Date(1989, 7, 17),
+    phone: '348 901 2345',
+    email: 'marta.santoro@example.com',
+    address: 'Corso Francia 120, Roma',
+    medicalNotes: 'Sensibilità a parabeni e profumi',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-106',
+        number: 'F2023-106',
+        date: new Date(2023, 10, 22),
+        amount: 280.00,
+        paid: false,
+        description: 'Trattamento filler labbra'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '207',
+    firstName: 'Nicola',
+    lastName: 'Esposito',
+    birthDate: new Date(1981, 2, 9),
+    phone: '349 012 3456',
+    email: 'nicola.esposito@example.com',
+    address: 'Via Verdi 45, Palermo',
+    medicalNotes: 'Dermatite seborroica cuoio capelluto',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-107',
+        number: 'F2023-107',
+        date: new Date(2023, 10, 25),
+        amount: 130.00,
+        paid: true,
+        description: 'Consulenza e terapia dermatite seborroica'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '208',
+    firstName: 'Sofia',
+    lastName: 'Lombardi',
+    birthDate: new Date(1994, 4, 21),
+    phone: '350 123 4567',
+    email: 'sofia.lombardi@example.com',
+    address: 'Via Dante 67, Firenze',
+    medicalNotes: 'Melasma su zigomi e fronte',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-108',
+        number: 'F2023-108',
+        date: new Date(2023, 10, 28),
+        amount: 220.00,
+        paid: true,
+        description: 'Trattamento melasma - Sessione 1'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '209',
+    firstName: 'Riccardo',
+    lastName: 'Mancini',
+    birthDate: new Date(1984, 9, 14),
+    phone: '351 234 5678',
+    email: 'riccardo.mancini@example.com',
+    address: 'Corso Vittorio 90, Bari',
+    medicalNotes: 'Iperidrosi ascellare',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-109',
+        number: 'F2023-109',
+        date: new Date(2023, 11, 2),
+        amount: 350.00,
+        paid: false,
+        description: 'Trattamento botox iperidrosi'
+      }
+    ],
+    consents: []
+  },
+  {
+    id: '210',
+    firstName: 'Giorgia',
+    lastName: 'Fabbri',
+    birthDate: new Date(1993, 11, 30),
+    phone: '352 345 6789',
+    email: 'giorgia.fabbri@example.com',
+    address: 'Via Garibaldi 23, Verona',
+    medicalNotes: 'Acne cistica moderata',
+    measurements: [],
+    attachments: [],
+    invoices: [
+      {
+        id: 'inv-110',
+        number: 'F2023-110',
+        date: new Date(2023, 11, 5),
+        amount: 190.00,
+        paid: true,
+        description: 'Consulenza acne e prescrizione terapia'
+      }
+    ],
+    consents: []
   }
 ];
 
 // Combine all clients
-export const mergedClients: Client[] = [...sampleClients, ...additionalClients];
+export const mergedClients = [...sampleClients, ...additionalClients];
