@@ -70,8 +70,8 @@ export interface CrmContextType {
   addMeasurement: (clientId: string, measurement: Omit<Measurement, 'id'>) => void;
   updateMeasurement: (clientId: string, measurement: Measurement) => void;
   deleteMeasurement: (clientId: string, measurementId: string) => void;
-  treatments: Treatment[];
-  doctors: Doctor[];
-  bodyAreas: BodyArea[];
+  treatments: readonly Treatment[];
+  doctors: readonly Doctor[];
+  bodyAreas: readonly BodyArea[];
   sendWhatsAppReminder: (clientId: string, appointmentId: string) => void;
 }
