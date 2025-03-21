@@ -23,32 +23,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 
-// Enhanced color palette with better contrast
-const COLORS = ['#8884d8', '#82ca9d', '#ff8042', '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#6C5CE7'];
+// Enhanced color palette with better contrast based on our core colors
+const COLORS = ['#0ea5e9', '#38bdf8', '#0284c7', '#0369a1', '#075985', '#7dd3fc', '#0c4a6e', '#bae6fd'];
 
 // Define the chart configuration for the appointment types chart
 const appointmentTypesConfig = {
-  laser: { label: 'Laser', theme: { light: '#8B5CF6', dark: '#A78BFA' } },
-  chemical: { label: 'Chemical Peel', theme: { light: '#EC4899', dark: '#F472B6' } },
-  micro: { label: 'Microdermabrasion', theme: { light: '#14B8A6', dark: '#2DD4BF' } },
-  botox: { label: 'Botox', theme: { light: '#F59E0B', dark: '#FBBF24' } },
-  filler: { label: 'Filler', theme: { light: '#06B6D4', dark: '#22D3EE' } },
-  meso: { label: 'Mesotherapy', theme: { light: '#8B5CF6', dark: '#A78BFA' } },
-  consultation: { label: 'Consultation', theme: { light: '#6366F1', dark: '#818CF8' } },
-  followup: { label: 'Follow-up', theme: { light: '#10B981', dark: '#34D399' } },
+  laser: { label: 'Laser', theme: { light: '#0ea5e9', dark: '#38bdf8' } },
+  chemical: { label: 'Chemical Peel', theme: { light: '#0284c7', dark: '#0369a1' } },
+  micro: { label: 'Microdermabrasion', theme: { light: '#075985', dark: '#7dd3fc' } },
+  botox: { label: 'Botox', theme: { light: '#0c4a6e', dark: '#bae6fd' } },
+  filler: { label: 'Filler', theme: { light: '#0ea5e9', dark: '#38bdf8' } },
+  meso: { label: 'Mesotherapy', theme: { light: '#0284c7', dark: '#0369a1' } },
+  consultation: { label: 'Consultation', theme: { light: '#075985', dark: '#7dd3fc' } },
+  followup: { label: 'Follow-up', theme: { light: '#0c4a6e', dark: '#bae6fd' } },
 };
 
 // Define the chart configuration for the weekly appointments chart
 const weeklyConfig = {
-  appointments: { label: 'Appuntamenti', theme: { light: '#8B5CF6', dark: '#A78BFA' } },
+  appointments: { label: 'Appuntamenti', theme: { light: '#0ea5e9', dark: '#38bdf8' } },
 };
 
 // Define the chart configuration for the doctor distribution chart
 const doctorConfig = {
-  rossi: { label: 'Dr. Rossi', theme: { light: '#8B5CF6', dark: '#A78BFA' } },
-  bianchi: { label: 'Dr. Bianchi', theme: { light: '#EC4899', dark: '#F472B6' } },
-  verdi: { label: 'Dr. Verdi', theme: { light: '#14B8A6', dark: '#2DD4BF' } },
-  ferrari: { label: 'Dr. Ferrari', theme: { light: '#F59E0B', dark: '#FBBF24' } },
+  rossi: { label: 'Dr. Rossi', theme: { light: '#0ea5e9', dark: '#38bdf8' } },
+  bianchi: { label: 'Dr. Bianchi', theme: { light: '#0284c7', dark: '#0369a1' } },
+  verdi: { label: 'Dr. Verdi', theme: { light: '#075985', dark: '#7dd3fc' } },
+  ferrari: { label: 'Dr. Ferrari', theme: { light: '#0c4a6e', dark: '#bae6fd' } },
 };
 
 const DashboardCharts: React.FC = () => {
@@ -156,7 +156,8 @@ const DashboardCharts: React.FC = () => {
     
     if (percent < 0.05) return null;
     
-    const treatment = name.toLowerCase();
+    // Fix: Check if name is a string before using toLowerCase
+    const treatment = typeof name === 'string' ? name.toLowerCase() : String(name);
     const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
     const displayName = config ? config.label : name;
     
@@ -213,10 +214,10 @@ const DashboardCharts: React.FC = () => {
                     type="monotone" 
                     dataKey="appointments" 
                     name="Appuntamenti"
-                    stroke="#8B5CF6" 
+                    stroke="#0ea5e9" 
                     activeDot={{ r: 8 }} 
                     strokeWidth={3}
-                    dot={{ stroke: '#8B5CF6', strokeWidth: 2, r: 4, fill: 'white' }}
+                    dot={{ stroke: '#0ea5e9', strokeWidth: 2, r: 4, fill: 'white' }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -246,7 +247,7 @@ const DashboardCharts: React.FC = () => {
                   <Bar 
                     dataKey="appointments" 
                     name="Appuntamenti"
-                    fill="#8B5CF6" 
+                    fill="#0ea5e9" 
                     radius={[4, 4, 0, 0]} 
                   />
                 </BarChart>
@@ -283,7 +284,7 @@ const DashboardCharts: React.FC = () => {
                 <Tooltip
                   formatter={(value, name) => {
                     // Fix: Check if name is a string before using toLowerCase
-                    const treatment = typeof name === 'string' ? name.toLowerCase() : name;
+                    const treatment = typeof name === 'string' ? name.toLowerCase() : String(name);
                     const config = typeof treatment === 'string' ? 
                       appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig] : 
                       undefined;
@@ -300,7 +301,7 @@ const DashboardCharts: React.FC = () => {
                 <Legend
                   formatter={(value) => {
                     // Fix: Check if value is a string before using toLowerCase
-                    const treatment = typeof value === 'string' ? value.toLowerCase() : value;
+                    const treatment = typeof value === 'string' ? value.toLowerCase() : String(value);
                     const config = typeof treatment === 'string' ? 
                       appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig] : 
                       undefined;
@@ -362,7 +363,7 @@ const DashboardCharts: React.FC = () => {
                 <Bar 
                   dataKey="value" 
                   name="Appuntamenti"
-                  fill="#8B5CF6" 
+                  fill="#0ea5e9" 
                   radius={[4, 4, 0, 0]} 
                 >
                   {doctorDistributionData.map((entry, index) => (

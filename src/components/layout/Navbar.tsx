@@ -39,7 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
             </Button>
             
             <NavLink to="/" className="flex items-center">
-              <span className="text-lg font-semibold bg-gradient-to-r from-derma-800 to-derma-600 bg-clip-text text-transparent">DermaCRM</span>
+              <span className="text-lg font-semibold bg-gradient-to-r from-core-800 to-core-600 bg-clip-text text-transparent">CoreStudio CRM</span>
             </NavLink>
           </div>
           
@@ -53,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                   "flex items-center px-3 py-2 text-sm rounded-md transition-colors",
                   isActive 
                     ? "bg-primary/10 text-primary font-medium" 
-                    : "text-derma-600 hover:bg-derma-50"
+                    : "text-core-600 hover:bg-core-50"
                 )}
               >
                 {item.icon}
@@ -89,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                     "flex items-center px-3 py-2 text-sm rounded-md transition-colors",
                     isActive 
                       ? "bg-primary/10 text-primary font-medium" 
-                      : "text-derma-600 hover:bg-derma-50"
+                      : "text-core-600 hover:bg-core-50"
                   )}
                   onClick={() => setShowMobileMenu(false)}
                 >

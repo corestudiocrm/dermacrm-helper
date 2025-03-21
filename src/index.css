@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 215 95% 50%;
+    --primary: 200 98% 39%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96%;
@@ -25,7 +25,7 @@
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 46%;
 
-    --accent: 216 100% 97%;
+    --accent: 199 89% 48%;
     --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
@@ -33,18 +33,18 @@
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 215 95% 50%;
+    --ring: 200 98% 39%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 16% 46%;
-    --sidebar-primary: 215 95% 50%;
+    --sidebar-primary: 200 98% 39%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 216 100% 97%;
+    --sidebar-accent: 199 89% 98%;
     --sidebar-accent-foreground: 222 47% 11%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 215 95% 50%;
+    --sidebar-ring: 200 98% 39%;
   }
 
   * {
@@ -81,7 +81,7 @@
   }
 
   .glass-dark {
-    @apply bg-derma-950/50 backdrop-blur-md border border-derma-800/30 shadow-glass;
+    @apply bg-core-950/50 backdrop-blur-md border border-core-800/30 shadow-glass;
   }
 
   /* Animations */

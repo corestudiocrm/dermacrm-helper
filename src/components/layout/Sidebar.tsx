@@ -26,14 +26,14 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   return (
     <div
       className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 border-r border-derma-100 bg-white transition-transform duration-300 ease-in-out md:translate-x-0",
+        "fixed inset-y-0 left-0 z-40 w-64 border-r border-core-100 bg-white transition-transform duration-300 ease-in-out md:translate-x-0",
         open ? "translate-x-0" : "-translate-x-full"
       )}
     >
       <div className="flex h-full flex-col">
-        <div className="flex h-16 items-center justify-between px-4 border-b border-derma-100">
-          <span className="text-lg font-semibold bg-gradient-to-r from-derma-800 to-derma-600 bg-clip-text text-transparent">
-            DermaCRM
+        <div className="flex h-16 items-center justify-between px-4 border-b border-core-100">
+          <span className="text-lg font-semibold bg-gradient-to-r from-core-800 to-core-600 bg-clip-text text-transparent">
+            CoreStudio CRM
           </span>
           
           <Button 
@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
         <ScrollArea className="flex-1 py-4">
           <div className="px-3 space-y-6">
             <div className="space-y-1">
-              <h3 className="px-3 text-xs font-medium uppercase tracking-wider text-derma-500">
+              <h3 className="px-3 text-xs font-medium uppercase tracking-wider text-core-500">
                 Navigazione
               </h3>
               <nav className="space-y-1">
@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                       "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
                       isActive 
                         ? "bg-primary/10 text-primary font-medium" 
-                        : "text-derma-600 hover:bg-derma-50"
+                        : "text-core-600 hover:bg-core-50"
                     )}
                     onClick={() => {
                       if (window.innerWidth < 768) {
@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
             </div>
             
             <div className="space-y-1">
-              <h3 className="px-3 text-xs font-medium uppercase tracking-wider text-derma-500">
+              <h3 className="px-3 text-xs font-medium uppercase tracking-wider text-core-500">
                 Azioni rapide
               </h3>
               <nav className="space-y-1">
@@ -91,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                       "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
                       isActive 
                         ? "bg-primary/10 text-primary font-medium" 
-                        : "text-derma-600 hover:bg-derma-50"
+                        : "text-core-600 hover:bg-core-50"
                     )}
                     onClick={() => {
                       if (window.innerWidth < 768) {
@@ -108,10 +108,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
           </div>
         </ScrollArea>
         
-        <div className="p-4 border-t border-derma-100">
-          <div className="rounded-md bg-derma-50 p-3">
-            <p className="text-xs text-derma-600">
-              Benvenuto in DermaCRM, il tuo assistente per la gestione dei pazienti e degli appuntamenti
+        <div className="p-4 border-t border-core-100">
+          <div className="rounded-md bg-core-50 p-3">
+            <p className="text-xs text-core-600">
+              Benvenuto in CoreStudio CRM, il tuo assistente per la gestione dei pazienti e degli appuntamenti
             </p>
           </div>
         </div>

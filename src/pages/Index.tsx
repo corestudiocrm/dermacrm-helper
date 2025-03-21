@@ -46,20 +46,20 @@ const Index: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
             <p className="text-muted-foreground mt-1">
-              Benvenuto nel CRM dello studio dermatologico
+              Benvenuto nel CRM dello studio
             </p>
           </div>
           <div className="flex space-x-2">
             <Button 
               onClick={() => navigate('/clients/new')}
-              className="bg-derma-600 hover:bg-derma-700"
+              className="bg-core-600 hover:bg-core-700"
             >
               <UserPlus className="mr-2 h-4 w-4" />
               Nuovo cliente
             </Button>
             <Button 
               onClick={() => navigate('/appointments/new')}
-              className="bg-derma-600 hover:bg-derma-700"
+              className="bg-core-600 hover:bg-core-700"
             >
               <CalendarPlus className="mr-2 h-4 w-4" />
               Nuovo appuntamento
@@ -71,7 +71,7 @@ const Index: React.FC = () => {
           <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg font-medium">
-                <UsersIcon className="mr-2 h-5 w-5 text-derma-600" />
+                <UsersIcon className="mr-2 h-5 w-5 text-core-600" />
                 Clienti
               </CardTitle>
               <CardDescription>Gestione anagrafica clienti</CardDescription>
@@ -85,7 +85,7 @@ const Index: React.FC = () => {
             <CardFooter className="pb-4">
               <Button 
                 variant="ghost" 
-                className="w-full text-derma-700 hover:text-derma-800 hover:bg-derma-50"
+                className="w-full text-core-700 hover:text-core-800 hover:bg-core-50"
                 onClick={() => navigate('/clients')}
               >
                 Visualizza tutti i clienti
@@ -97,7 +97,7 @@ const Index: React.FC = () => {
           <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg font-medium">
-                <Calendar className="mr-2 h-5 w-5 text-derma-600" />
+                <Calendar className="mr-2 h-5 w-5 text-core-600" />
                 Appuntamenti
               </CardTitle>
               <CardDescription>Gestione appuntamenti</CardDescription>
@@ -111,7 +111,7 @@ const Index: React.FC = () => {
             <CardFooter className="pb-4">
               <Button 
                 variant="ghost" 
-                className="w-full text-derma-700 hover:text-derma-800 hover:bg-derma-50"
+                className="w-full text-core-700 hover:text-core-800 hover:bg-core-50"
                 onClick={() => navigate('/appointments')}
               >
                 Visualizza tutti gli appuntamenti
@@ -123,7 +123,7 @@ const Index: React.FC = () => {
           <Card className="hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg font-medium">
-                <BarChart3 className="mr-2 h-5 w-5 text-derma-600" />
+                <BarChart3 className="mr-2 h-5 w-5 text-core-600" />
                 Performance
               </CardTitle>
               <CardDescription>Riepilogo attività</CardDescription>
@@ -140,7 +140,7 @@ const Index: React.FC = () => {
             <CardFooter className="pb-4">
               <Button 
                 variant="ghost" 
-                className="w-full text-derma-700 hover:text-derma-800 hover:bg-derma-50"
+                className="w-full text-core-700 hover:text-core-800 hover:bg-core-50"
                 onClick={() => navigate('/clients')}
               >
                 Analizza clienti
@@ -160,7 +160,7 @@ const Index: React.FC = () => {
           <Card className="col-span-1 hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg font-medium">
-                <Clock className="mr-2 h-5 w-5 text-derma-600" />
+                <Clock className="mr-2 h-5 w-5 text-core-600" />
                 Appuntamenti di oggi
               </CardTitle>
               <CardDescription>
@@ -190,7 +190,7 @@ const Index: React.FC = () => {
                         onClick={() => navigate(`/appointments/${appointment.id}`)}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="min-w-[44px] h-10 flex flex-col items-center justify-center rounded-md bg-derma-50 text-derma-700">
+                          <div className="min-w-[44px] h-10 flex flex-col items-center justify-center rounded-md bg-core-50 text-core-700">
                             <div className="text-sm font-medium">
                               {format(new Date(appointment.date), "HH:mm")}
                             </div>
@@ -218,7 +218,7 @@ const Index: React.FC = () => {
               <CardFooter className="pb-4">
                 <Button 
                   variant="ghost" 
-                  className="w-full text-derma-700 hover:text-derma-800 hover:bg-derma-50"
+                  className="w-full text-core-700 hover:text-core-800 hover:bg-core-50"
                   onClick={() => navigate('/appointments')}
                 >
                   Visualizza tutti gli appuntamenti
@@ -231,7 +231,7 @@ const Index: React.FC = () => {
           <Card className="col-span-1 hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg font-medium">
-                <Calendar className="mr-2 h-5 w-5 text-derma-600" />
+                <Calendar className="mr-2 h-5 w-5 text-core-600" />
                 Prossimi appuntamenti
               </CardTitle>
               <CardDescription>
@@ -267,7 +267,7 @@ const Index: React.FC = () => {
                         onClick={() => navigate(`/appointments/${appointment.id}`)}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="min-w-[44px] h-10 flex flex-col items-center justify-center rounded-md bg-derma-50 text-derma-700">
+                          <div className="min-w-[44px] h-10 flex flex-col items-center justify-center rounded-md bg-core-50 text-core-700">
                             <div className="text-xs text-muted-foreground">
                               {isUpcomingDays 
                                 ? format(new Date(appointment.date), "EEE") 
@@ -299,7 +299,7 @@ const Index: React.FC = () => {
               <CardFooter className="pb-4">
                 <Button 
                   variant="ghost" 
-                  className="w-full text-derma-700 hover:text-derma-800 hover:bg-derma-50"
+                  className="w-full text-core-700 hover:text-core-800 hover:bg-core-50"
                   onClick={() => navigate('/appointments')}
                 >
                   Visualizza tutti gli appuntamenti
