@@ -7,6 +7,9 @@ import DashboardCharts from '@/components/dashboard/DashboardCharts';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import StatisticsSection from '@/components/dashboard/StatisticsSection';
 import AppointmentsList from '@/components/dashboard/AppointmentsList';
+import { Button } from '@/components/ui/button';
+import { Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Index: React.FC = () => {
   const { clients, appointments, getClient } = useCrm();
@@ -30,6 +33,16 @@ const Index: React.FC = () => {
     <PageTransition>
       <div className="space-y-6">
         <DashboardHeader />
+        
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold">Statistiche</h2>
+          <Button variant="outline" asChild>
+            <Link to="/clients-overview">
+              <Users className="h-4 w-4 mr-2" />
+              Visualizza tutti i clienti ({clients.length})
+            </Link>
+          </Button>
+        </div>
         
         <StatisticsSection clients={clients} appointments={appointments} />
         
