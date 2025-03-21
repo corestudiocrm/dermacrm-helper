@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { format, startOfWeek, addDays, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -11,15 +12,19 @@ import {
   CartesianGrid, 
   PieChart,
   Pie,
-  Cell
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend
 } from 'recharts';
 
 import { useCrm } from '@/context/CrmContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE', '#00C49F'];
+// Enhanced color palette with better contrast
+const COLORS = ['#8884d8', '#82ca9d', '#ff8042', '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#6C5CE7'];
 
 // Define the chart configuration for the appointment types chart
 const appointmentTypesConfig = {
@@ -35,7 +40,7 @@ const appointmentTypesConfig = {
 
 // Define the chart configuration for the weekly appointments chart
 const weeklyConfig = {
-  appointments: { label: 'Appointments', theme: { light: '#8B5CF6', dark: '#A78BFA' } },
+  appointments: { label: 'Appuntamenti', theme: { light: '#8B5CF6', dark: '#A78BFA' } },
 };
 
 // Define the chart configuration for the doctor distribution chart
@@ -99,7 +104,7 @@ const DashboardCharts: React.FC = () => {
     
     treatments.forEach(treatment => {
       // Initialize each treatment type
-      counts[treatment.toLowerCase().replace('-', '')] = 0;
+      counts[treatment.toLowerCase().replace(' ', '')] = 0;
     });
     
     appointments.forEach(appointment => {
@@ -111,7 +116,8 @@ const DashboardCharts: React.FC = () => {
     
     return Object.keys(counts).map(key => ({
       name: key,
-      value: counts[key]
+      value: counts[key],
+      label: key
     }));
   }, [appointments, treatments]);
 
@@ -133,9 +139,40 @@ const DashboardCharts: React.FC = () => {
     
     return Object.keys(counts).map(key => ({
       name: key,
-      value: counts[key]
+      value: counts[key],
+      label: doctorConfig[key as keyof typeof doctorConfig]?.label || key
     }));
   }, [appointments]);
+
+  const customTooltipFormatter = (value: number, name: string) => {
+    return [`${value}`, 'Appuntamenti'];
+  };
+
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    
+    if (percent < 0.05) return null;
+    
+    const treatment = name.toLowerCase();
+    const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
+    const displayName = config ? config.label : name;
+    
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="#fff" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        fontSize={12}
+      >
+        {`${displayName} ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -152,61 +189,68 @@ const DashboardCharts: React.FC = () => {
             </TabsList>
             
             <TabsContent value="week" className="h-[300px]">
-              <ChartContainer config={weeklyConfig}>
+              <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={getWeeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" />
-                  <YAxis domain={[0, 'auto']} />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent 
-                        labelFormatter={(label, payload) => {
-                          if (payload && payload[0]) {
-                            const dataPoint = getWeeklyData.find(d => d.name === label);
-                            return dataPoint ? format(dataPoint.date, 'dd MMMM yyyy', { locale: it }) : label;
-                          }
-                          return label;
-                        }}
-                      />
-                    }
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
+                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    formatter={customTooltipFormatter}
+                    labelFormatter={(label) => {
+                      const dataPoint = getWeeklyData.find(d => d.name === label);
+                      return dataPoint ? format(dataPoint.date, 'dd MMMM yyyy', { locale: it }) : label;
+                    }}
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #f1f1f1',
+                      borderRadius: '6px',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                      fontSize: '12px'
+                    }}
                   />
+                  <Legend />
                   <Line 
                     type="monotone" 
                     dataKey="appointments" 
-                    name="appointments"
-                    activeDot={{ r: 6 }} 
+                    name="Appuntamenti"
+                    stroke="#8B5CF6" 
+                    activeDot={{ r: 8 }} 
                     strokeWidth={3}
+                    dot={{ stroke: '#8B5CF6', strokeWidth: 2, r: 4, fill: 'white' }}
                   />
                 </LineChart>
-              </ChartContainer>
+              </ResponsiveContainer>
             </TabsContent>
             
             <TabsContent value="month" className="h-[300px]">
-              <ChartContainer config={weeklyConfig}>
+              <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={getMonthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="name" />
-                  <YAxis domain={[0, 'auto']} />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent 
-                        labelFormatter={(label, payload) => {
-                          if (payload && payload[0]) {
-                            const dataPoint = getMonthlyData.find(d => d.name === label);
-                            return dataPoint ? format(dataPoint.date, 'dd MMMM yyyy', { locale: it }) : label;
-                          }
-                          return label;
-                        }}
-                      />
-                    }
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
+                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    formatter={customTooltipFormatter}
+                    labelFormatter={(label) => {
+                      const dataPoint = getMonthlyData.find(d => d.name === label);
+                      return dataPoint ? format(dataPoint.date, 'dd MMMM yyyy', { locale: it }) : label;
+                    }}
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #f1f1f1',
+                      borderRadius: '6px',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                      fontSize: '12px'
+                    }}
                   />
+                  <Legend />
                   <Bar 
                     dataKey="appointments" 
-                    name="appointments"
+                    name="Appuntamenti"
+                    fill="#8B5CF6" 
                     radius={[4, 4, 0, 0]} 
                   />
                 </BarChart>
-              </ChartContainer>
+              </ResponsiveContainer>
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -219,42 +263,49 @@ const DashboardCharts: React.FC = () => {
         </CardHeader>
         <CardContent className="flex flex-col items-center">
           <div className="h-[300px] w-full">
-            <ChartContainer config={appointmentTypesConfig}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={appointmentTypesData}
                   cx="50%"
                   cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
                   nameKey="name"
-                  label={(entry) => {
-                    const treatment = entry.name.toLowerCase();
-                    const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
-                    return config ? config.label : entry.name;
-                  }}
                 >
                   {appointmentTypesData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent 
-                      labelFormatter={(label) => {
-                        if (label) {
-                          const treatment = label.toString().toLowerCase();
-                          const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
-                          return config ? config.label : label;
-                        }
-                        return label;
-                      }}
-                    />
-                  }
+                <Tooltip
+                  formatter={(value, name) => {
+                    const treatment = name.toLowerCase();
+                    const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
+                    return [value, config ? config.label : name];
+                  }}
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #f1f1f1',
+                    borderRadius: '6px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    fontSize: '12px'
+                  }}
+                />
+                <Legend
+                  formatter={(value) => {
+                    const treatment = value.toLowerCase();
+                    const config = appointmentTypesConfig[treatment as keyof typeof appointmentTypesConfig];
+                    return config ? config.label : value;
+                  }}
+                  layout="horizontal"
+                  verticalAlign="bottom"
+                  align="center"
                 />
               </PieChart>
-            </ChartContainer>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
@@ -266,33 +317,40 @@ const DashboardCharts: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="h-[300px]">
-            <ChartContainer config={doctorConfig}>
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={doctorDistributionData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
                 <XAxis 
                   dataKey="name" 
                   tickFormatter={(value) => {
                     const config = doctorConfig[value as keyof typeof doctorConfig];
                     return config ? config.label : value;
                   }}
+                  stroke="#888888" 
+                  fontSize={12} 
+                  tickLine={false} 
+                  axisLine={false}
                 />
-                <YAxis domain={[0, 'auto']} />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent 
-                      labelFormatter={(label) => {
-                        if (label) {
-                          const config = doctorConfig[label.toString() as keyof typeof doctorConfig];
-                          return config ? config.label : label;
-                        }
-                        return label;
-                      }}
-                    />
-                  }
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip
+                  formatter={(value) => [`${value}`, 'Appuntamenti']}
+                  labelFormatter={(label) => {
+                    const config = doctorConfig[label.toString() as keyof typeof doctorConfig];
+                    return config ? config.label : label;
+                  }}
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #f1f1f1',
+                    borderRadius: '6px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    fontSize: '12px'
+                  }}
                 />
+                <Legend />
                 <Bar 
                   dataKey="value" 
-                  name="value"
+                  name="Appuntamenti"
+                  fill="#8B5CF6" 
                   radius={[4, 4, 0, 0]} 
                 >
                   {doctorDistributionData.map((entry, index) => (
@@ -300,7 +358,7 @@ const DashboardCharts: React.FC = () => {
                   ))}
                 </Bar>
               </BarChart>
-            </ChartContainer>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
