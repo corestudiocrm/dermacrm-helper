@@ -1,12 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, UserPlus, User } from 'lucide-react';
+import { Search, UserPlus, User, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useCrm, Client } from '@/context/CrmContext';
 import { format } from 'date-fns';
 
@@ -21,13 +22,14 @@ const ClientsList: React.FC = () => {
     const query = searchQuery.toLowerCase();
     return fullName.includes(query) || 
            client.email?.toLowerCase().includes(query) || 
-           client.phone.includes(query);
+           client.phone.includes(query) ||
+           client.id.toLowerCase().includes(query);
   });
 
-  // Sort clients by last name
-  const sortedClients = [...filteredClients].sort((a, b) => 
-    a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName)
-  );
+  // Sort clients by creation date (assuming id is timestamp-based)
+  const sortedClients = [...filteredClients].sort((a, b) => {
+    return parseInt(b.id) - parseInt(a.id); // Sort by id (descending)
+  });
 
   const container = {
     hidden: { opacity: 0 },
@@ -104,20 +106,32 @@ const ClientsList: React.FC = () => {
                   onClick={() => navigate(`/clients/${client.id}`)}
                 >
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{client.firstName} {client.lastName}</CardTitle>
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-lg">{client.firstName} {client.lastName}</CardTitle>
+                      <Badge variant="outline" className="text-xs font-mono">
+                        ID: {client.id.substring(0, 8)}
+                      </Badge>
+                    </div>
                     <CardDescription>
                       {format(new Date(client.birthDate), "dd/MM/yyyy")} • {client.phone}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-sm space-y-2">
-                      {client.email && (
+                      {client.email && (a
                         <p className="text-muted-foreground truncate">{client.email}</p>
                       )}
                       
                       {client.address && (
                         <p className="text-muted-foreground truncate">{client.address}</p>
                       )}
+                      
+                      <div className="flex items-center mt-2">
+                        <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <span className="text-muted-foreground">
+                          Appuntamenti: {appointments.length}
+                        </span>
+                      </div>
                       
                       {nextAppointment ? (
                         <div className="mt-3 text-xs">

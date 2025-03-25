@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { UserPlus, User, ArrowRight } from 'lucide-react';
 
 import LandingHeader from '@/components/landing/LandingHeader';
+import ClientCodeFinder from '@/components/landing/ClientCodeFinder';
 import { Button } from '@/components/ui/button';
 
 const LandingPage: React.FC = () => {
@@ -58,6 +59,10 @@ const LandingPage: React.FC = () => {
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
+                  
+                  <div className="mt-6 w-full">
+                    <ClientCodeFinder />
+                  </div>
                 </div>
               </div>
             </div>

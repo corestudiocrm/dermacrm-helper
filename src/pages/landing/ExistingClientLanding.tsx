@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Calendar, Bell } from 'lucide-react';
+import { User, Calendar, Bell, IdCard } from 'lucide-react';
 
 import LandingHeader from '@/components/landing/LandingHeader';
 import ClientVerification from '@/components/landing/ClientVerification';
 import ClientAppointments from '@/components/landing/ClientAppointments';
 import { useCrm } from '@/context/CrmContext';
+import { Badge } from '@/components/ui/badge';
 
 const ExistingClientLanding: React.FC = () => {
   const [verifiedClientId, setVerifiedClientId] = useState<string | null>(null);
@@ -33,17 +34,27 @@ const ExistingClientLanding: React.FC = () => {
               {client && (
                 <div className="space-y-6">
                   <div className="bg-white rounded-lg shadow-sm border p-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="h-8 w-8 text-primary" />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="h-8 w-8 text-primary" />
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-semibold">
+                            {client.firstName} {client.lastName}
+                          </h2>
+                          <p className="text-sm text-muted-foreground">
+                            {client.phone}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h2 className="text-xl font-semibold">
-                          {client.firstName} {client.lastName}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          Codice cliente: {client.id}
-                        </p>
+                      
+                      <div className="flex items-center space-x-2 px-4 py-2 bg-muted/50 rounded-lg border">
+                        <IdCard className="h-5 w-5 text-primary" />
+                        <div>
+                          <div className="text-xs text-muted-foreground">Codice cliente</div>
+                          <div className="font-mono font-medium">{client.id}</div>
+                        </div>
                       </div>
                     </div>
                   </div>
