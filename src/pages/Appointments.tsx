@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { 
   Card, 
   CardContent, 
@@ -31,6 +31,7 @@ import { useCrm } from '@/context/CrmContext';
 const Appointments: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { appointments, getClient, deleteAppointment, sendWhatsAppReminder } = useCrm();
   const navigate = useNavigate();
   
@@ -67,6 +68,18 @@ const Appointments: React.FC = () => {
       sendWhatsAppReminder(client.id, appointment.id);
     }
   };
+  
+  // Check if we have a date query parameter
+  useEffect(() => {
+    if (!id && !isNewPath && !isEditPath) {
+      const dateParam = searchParams.get('date');
+      if (dateParam) {
+        const dateObj = new Date(dateParam);
+        // The date parameter is used in the AppointmentsList component
+        // We don't need to do anything here, it will be handled by the filter components
+      }
+    }
+  }, [searchParams, id, isNewPath, isEditPath]);
   
   return (
     <PageTransition>
