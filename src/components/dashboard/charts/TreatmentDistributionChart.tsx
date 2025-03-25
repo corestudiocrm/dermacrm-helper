@@ -113,8 +113,8 @@ const TreatmentDistributionChart: React.FC<TreatmentDistributionChartProps> = ({
           cy="50%"
           labelLine={false}
           label={renderCustomizedLabel}
-          outerRadius={({ chartWidth, chartHeight }) => Math.min(chartWidth, chartHeight) * 0.35}
-          innerRadius={({ chartWidth, chartHeight }) => Math.min(chartWidth, chartHeight) * 0.2}
+          outerRadius="70%"
+          innerRadius="40%"
           fill="#8884d8"
           dataKey="value"
           nameKey="name"
