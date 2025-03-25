@@ -11,7 +11,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ title }) => {
     <header className="py-4 px-6 border-b bg-white">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <Link to="/" className="text-xl font-semibold text-primary">
+          <Link to="/landing" className="text-xl font-semibold text-primary">
             Studio Francia
           </Link>
           {title && (
@@ -27,7 +27,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ title }) => {
             Nuovo Appuntamento
           </Link>
           <Link to="/landing/login" className="text-sm font-medium hover:text-primary">
-            Area Clienti
+            Area Pazienti
           </Link>
         </nav>
       </div>

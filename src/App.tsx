@@ -15,6 +15,7 @@ import Clients from "./pages/Clients";
 import ClientDetail from "./pages/ClientDetail";
 import Appointments from "./pages/Appointments";
 import NotFound from "./pages/NotFound";
+import LandingPage from "./pages/landing/LandingPage";
 import NewClientLanding from "./pages/landing/NewClientLanding";
 import ExistingClientLanding from "./pages/landing/ExistingClientLanding";
 
@@ -34,6 +35,7 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               {/* Landing Pages (no sidebar/navbar) */}
+              <Route path="/landing" element={<LandingPage />} />
               <Route path="/landing/new" element={<NewClientLanding />} />
               <Route path="/landing/login" element={<ExistingClientLanding />} />
 
