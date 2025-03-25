@@ -118,7 +118,7 @@ const ClientsList: React.FC = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="text-sm space-y-2">
-                      {client.email && (a
+                      {client.email && (
                         <p className="text-muted-foreground truncate">{client.email}</p>
                       )}
                       
