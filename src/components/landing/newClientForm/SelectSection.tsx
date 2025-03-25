@@ -15,7 +15,7 @@ interface SelectSectionProps {
   name: string;
   label: string;
   placeholder: string;
-  options: string[];
+  options: readonly string[] | string[]; // Updated to accept readonly arrays
 }
 
 const SelectSection: React.FC<SelectSectionProps> = ({
