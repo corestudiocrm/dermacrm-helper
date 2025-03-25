@@ -35,6 +35,78 @@ export const createAppointmentFunctions = (
       .sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort by date, most recent first
   };
 
+  // Check available time slots for a specific date
+  const getAvailableTimeSlots = (date: Date, duration: number = 30) => {
+    // Business hours (9:00 - 18:00)
+    const businessHours = {
+      start: 9, // 9:00
+      end: 18   // 18:00
+    };
+    
+    // Create time slots (30 minutes each by default)
+    const slots = [];
+    const appointmentsOnDate = appointments.filter(app => 
+      app.date.getFullYear() === date.getFullYear() &&
+      app.date.getMonth() === date.getMonth() &&
+      app.date.getDate() === date.getDate()
+    );
+    
+    // Generate all possible time slots
+    for (let hour = businessHours.start; hour < businessHours.end; hour++) {
+      for (let minute = 0; minute < 60; minute += duration) {
+        if (hour === businessHours.end - 1 && minute + duration > 60) continue;
+        
+        const slotTime = new Date(date);
+        slotTime.setHours(hour, minute, 0, 0);
+        
+        // Check if the slot is already booked
+        const isBooked = appointmentsOnDate.some(app => {
+          const appTime = app.date.getTime();
+          const slotStartTime = slotTime.getTime();
+          const slotEndTime = slotStartTime + duration * 60 * 1000;
+          
+          return appTime >= slotStartTime && appTime < slotEndTime;
+        });
+        
+        if (!isBooked) {
+          slots.push({
+            time: slotTime,
+            isAvailable: true
+          });
+        }
+      }
+    }
+    
+    return slots;
+  };
+
+  // Book appointment for new client
+  const bookAppointmentForNewClient = (
+    clientData: { firstName: string; lastName: string; phone: string; email: string },
+    appointmentData: { date: Date; treatment: string; doctor: string; notes: string },
+    addClient: (client: any) => string
+  ) => {
+    // Create new client
+    const clientId = addClient({
+      ...clientData,
+      birthDate: new Date(), // default birthdate
+      address: "",
+      medicalNotes: appointmentData.notes || ""
+    });
+    
+    // Create appointment
+    const appointment: Omit<Appointment, 'id'> = {
+      clientId,
+      date: appointmentData.date,
+      treatment: appointmentData.treatment as any,
+      doctor: appointmentData.doctor as any,
+      notes: appointmentData.notes
+    };
+    
+    addAppointment(appointment);
+    return { clientId, appointmentId: appointments[appointments.length - 1]?.id };
+  };
+
   // WhatsApp integration
   const sendWhatsAppReminder = (clientId: string, appointmentId: string) => {
     const client = getClient(clientId);
@@ -68,6 +140,8 @@ export const createAppointmentFunctions = (
     updateAppointment,
     deleteAppointment,
     getClientAppointments,
+    getAvailableTimeSlots,
+    bookAppointmentForNewClient,
     sendWhatsAppReminder
   };
 };

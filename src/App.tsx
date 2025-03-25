@@ -15,6 +15,8 @@ import Clients from "./pages/Clients";
 import ClientDetail from "./pages/ClientDetail";
 import Appointments from "./pages/Appointments";
 import NotFound from "./pages/NotFound";
+import NewClientLanding from "./pages/landing/NewClientLanding";
+import ExistingClientLanding from "./pages/landing/ExistingClientLanding";
 
 const queryClient = new QueryClient();
 
@@ -30,32 +32,41 @@ const App = () => {
           <SonnerToaster position="top-right" richColors closeButton />
           
           <BrowserRouter>
-            <div className="min-h-screen bg-background flex">
-              <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-              
-              <div className="flex-1 relative flex flex-col">
-                <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-                
-                <main className="flex-1 overflow-auto pt-16">
-                  <div className="container px-4 py-6 md:px-6 md:py-8">
-                    <AnimatePresence mode="wait">
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/clients" element={<Clients />} />
-                        <Route path="/clients/:id" element={<ClientDetail />} />
-                        <Route path="/clients/new" element={<Clients />} />
-                        <Route path="/clients/edit/:id" element={<Clients />} />
-                        <Route path="/appointments" element={<Appointments />} />
-                        <Route path="/appointments/:id" element={<Appointments />} />
-                        <Route path="/appointments/new" element={<Appointments />} />
-                        <Route path="/appointments/edit/:id" element={<Appointments />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </AnimatePresence>
+            <Routes>
+              {/* Landing Pages (no sidebar/navbar) */}
+              <Route path="/landing/new" element={<NewClientLanding />} />
+              <Route path="/landing/login" element={<ExistingClientLanding />} />
+
+              {/* Main Application Routes */}
+              <Route path="*" element={
+                <div className="min-h-screen bg-background flex">
+                  <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+                  
+                  <div className="flex-1 relative flex flex-col">
+                    <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+                    
+                    <main className="flex-1 overflow-auto pt-16">
+                      <div className="container px-4 py-6 md:px-6 md:py-8">
+                        <AnimatePresence mode="wait">
+                          <Routes>
+                            <Route path="/" element={<Index />} />
+                            <Route path="/clients" element={<Clients />} />
+                            <Route path="/clients/:id" element={<ClientDetail />} />
+                            <Route path="/clients/new" element={<Clients />} />
+                            <Route path="/clients/edit/:id" element={<Clients />} />
+                            <Route path="/appointments" element={<Appointments />} />
+                            <Route path="/appointments/:id" element={<Appointments />} />
+                            <Route path="/appointments/new" element={<Appointments />} />
+                            <Route path="/appointments/edit/:id" element={<Appointments />} />
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </AnimatePresence>
+                      </div>
+                    </main>
                   </div>
-                </main>
-              </div>
-            </div>
+                </div>
+              } />
+            </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </CrmProvider>
