@@ -28,7 +28,6 @@ const NewClientForm: React.FC<NewClientFormProps> = ({ selectedTimeSlot, onSubmi
       email: '',
       phone: '',
       treatment: '',
-      doctor: '',
       notes: '',
     },
   });
@@ -49,7 +48,7 @@ const NewClientForm: React.FC<NewClientFormProps> = ({ selectedTimeSlot, onSubmi
     const appointmentData = {
       date: selectedTimeSlot,
       treatment: values.treatment,
-      doctor: values.doctor,
+      doctor: doctors[0], // Default to first doctor in the list
       notes: values.notes || '',
     };
 
@@ -104,21 +103,13 @@ const NewClientForm: React.FC<NewClientFormProps> = ({ selectedTimeSlot, onSubmi
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <SelectSection
             form={form}
             name="treatment"
             label="Trattamento*"
             placeholder="Seleziona un trattamento"
             options={treatments}
-          />
-
-          <SelectSection
-            form={form}
-            name="doctor"
-            label="Dottore*"
-            placeholder="Seleziona un dottore"
-            options={doctors}
           />
         </div>
 

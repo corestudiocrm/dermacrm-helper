@@ -7,7 +7,6 @@ export const formSchema = z.object({
   email: z.string().email('Inserisci un indirizzo email valido'),
   phone: z.string().min(5, 'Inserisci un numero di telefono valido'),
   treatment: z.string().min(1, 'Seleziona un trattamento'),
-  doctor: z.string().min(1, 'Seleziona un dottore'),
   notes: z.string().optional(),
 });
 
