@@ -1,59 +1,84 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  format, 
-  startOfMonth, 
-  endOfMonth, 
-  eachDayOfInterval, 
-  getDay, 
-  isToday, 
-  isSameDay, 
-  isAfter 
+import React, { useState, useMemo } from 'react';
+import {
+  format,
+  startOfDay,
+  endOfDay,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  eachDayOfInterval,
+  addDays,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  isWithinInterval,
+  parseISO,
+  addMonths,
+  subMonths,
+  addWeeks,
+  subWeeks
 } from 'date-fns';
 import { it } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, User, Clock } from 'lucide-react';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Calendar as CalendarIcon,
+  User,
+  Clock
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
-import { 
+import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+import { Appointment } from '@/context/types';
 import { useCrm } from '@/context/CrmContext';
-import { AppointmentStatus } from './useAppointmentsFiltering';
+import { 
+  AppointmentStatus, 
+  CalendarViewMode,
+  useAppointmentsFiltering 
+} from './useAppointmentsFiltering';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useNavigate } from 'react-router-dom';
 
 interface CalendarViewProps {
-  selectedDoctorId?: string;
-  onDoctorChange?: (doctorId: string) => void;
-  selectedStatus?: AppointmentStatus;
-  onStatusChange?: (status: AppointmentStatus) => void;
+  selectedDoctorId: string;
+  onDoctorChange: (value: string) => void;
+  selectedStatus: AppointmentStatus;
+  onStatusChange: (value: AppointmentStatus) => void;
 }
 
 const CalendarView: React.FC<CalendarViewProps> = ({
-  selectedDoctorId = 'all',
+  selectedDoctorId,
   onDoctorChange,
-  selectedStatus = 'all',
+  selectedStatus,
   onStatusChange
 }) => {
   const navigate = useNavigate();
   const { appointments, getClient, doctors } = useCrm();
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [calendarViewMode, setCalendarViewMode] = useState<CalendarViewMode>('month');
   
   const doctorsOptions = [
     { id: 'all', name: 'Tutti i dottori' },
@@ -83,70 +108,118 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     
     return true;
   });
-  
-  // Navigate to previous/next month
-  const handlePreviousMonth = () => {
-    const previousMonth = new Date(currentMonth);
-    previousMonth.setMonth(previousMonth.getMonth() - 1);
-    setCurrentMonth(previousMonth);
+
+  // Get date ranges based on calendar view mode
+  const dateRange = useMemo(() => {
+    switch (calendarViewMode) {
+      case 'day':
+        return {
+          start: startOfDay(currentDate),
+          end: endOfDay(currentDate)
+        };
+      case 'week':
+        return {
+          start: startOfWeek(currentDate, { weekStartsOn: 1 }),
+          end: endOfWeek(currentDate, { weekStartsOn: 1 })
+        };
+      case 'month':
+      default:
+        return {
+          start: startOfMonth(currentDate),
+          end: endOfMonth(currentDate)
+        };
+    }
+  }, [currentDate, calendarViewMode]);
+
+  // Get days for the current month/week/day view
+  const daysInView = useMemo(() => {
+    return eachDayOfInterval({
+      start: dateRange.start,
+      end: dateRange.end,
+    });
+  }, [dateRange]);
+
+  // Navigation functions
+  const navigatePrevious = () => {
+    switch (calendarViewMode) {
+      case 'day':
+        setCurrentDate(addDays(currentDate, -1));
+        break;
+      case 'week':
+        setCurrentDate(subWeeks(currentDate, 1));
+        break;
+      case 'month':
+        setCurrentDate(subMonths(currentDate, 1));
+        break;
+    }
   };
 
-  const handleNextMonth = () => {
-    const nextMonth = new Date(currentMonth);
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    setCurrentMonth(nextMonth);
+  const navigateNext = () => {
+    switch (calendarViewMode) {
+      case 'day':
+        setCurrentDate(addDays(currentDate, 1));
+        break;
+      case 'week':
+        setCurrentDate(addWeeks(currentDate, 1));
+        break;
+      case 'month':
+        setCurrentDate(addMonths(currentDate, 1));
+        break;
+    }
   };
-  
-  // Days of the month
-  const daysInMonth = eachDayOfInterval({
-    start: startOfMonth(currentMonth),
-    end: endOfMonth(currentMonth)
-  });
-  
-  // Get the day of week (0-6) for the first day of month
-  const firstDayOfMonth = getDay(startOfMonth(currentMonth));
-  
-  // Weekday names
-  const weekDays = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
-  
-  // Get appointments for a specific day
-  const getAppointmentsForDay = (day: Date) => {
+
+  const navigateToToday = () => {
+    setCurrentDate(new Date());
+  };
+
+  const getDayAppointments = (day: Date) => {
     return filteredAppointments.filter(appointment => 
       isSameDay(new Date(appointment.date), day)
     );
   };
-  
+
+  // Select a day when clicked
+  const handleSelectDay = (day: Date) => {
+    navigate(`/appointments?date=${format(day, 'yyyy-MM-dd')}`);
+  };
+
   return (
-    <Card className="border-none shadow-none">
-      <CardHeader className="px-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">
-            {format(currentMonth, 'MMMM yyyy', { locale: it })}
-          </CardTitle>
-          
-          <div className="flex space-x-2">
-            <Button variant="outline" size="icon" onClick={handlePreviousMonth}>
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <Select value={calendarViewMode} onValueChange={(value) => setCalendarViewMode(value as CalendarViewMode)}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Visualizzazione" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day">Giorno</SelectItem>
+              <SelectItem value="week">Settimana</SelectItem>
+              <SelectItem value="month">Mese</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="flex items-center gap-1">
+            <Button variant="outline" size="icon" onClick={navigatePrevious}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button 
-              variant="outline"
-              onClick={() => setCurrentMonth(new Date())}
-            >
+            <Button variant="outline" onClick={navigateToToday}>
               Oggi
             </Button>
-            <Button variant="outline" size="icon" onClick={handleNextMonth}>
+            <Button variant="outline" size="icon" onClick={navigateNext}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
+          
+          <h3 className="text-lg font-medium">
+            {calendarViewMode === 'day' && format(currentDate, 'd MMMM yyyy', { locale: it })}
+            {calendarViewMode === 'week' && `${format(dateRange.start, 'd', { locale: it })} - ${format(dateRange.end, 'd MMMM yyyy', { locale: it })}`}
+            {calendarViewMode === 'month' && format(currentDate, 'MMMM yyyy', { locale: it })}
+          </h3>
         </div>
-        
-        <div className="flex flex-col sm:flex-row gap-2 mt-4">
-          {/* Doctor filter */}
-          <Select 
-            value={selectedDoctorId} 
-            onValueChange={onDoctorChange}
-          >
-            <SelectTrigger className="w-full sm:w-[200px]">
+
+        <div className="flex gap-2">
+          <Select value={selectedDoctorId} onValueChange={onDoctorChange}>
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filtra per dottore" />
             </SelectTrigger>
             <SelectContent>
@@ -157,134 +230,383 @@ const CalendarView: React.FC<CalendarViewProps> = ({
               ))}
             </SelectContent>
           </Select>
-          
-          {/* Status filter */}
+
           <Select 
-            value={selectedStatus}
-            onValueChange={(value) => onStatusChange?.(value as AppointmentStatus)}
+            value={selectedStatus} 
+            onValueChange={(value) => onStatusChange(value as AppointmentStatus)}
           >
-            <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filtra per stato" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tutti gli stati</SelectItem>
-              <SelectItem value="upcoming">Programmati</SelectItem>
-              <SelectItem value="completed">Completati</SelectItem>
+              <SelectItem value="all">Tutti gli appuntamenti</SelectItem>
+              <SelectItem value="upcoming">Prossimi appuntamenti</SelectItem>
+              <SelectItem value="completed">Appuntamenti completati</SelectItem>
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {calendarViewMode === 'day' && (
+        <DayView 
+          currentDate={currentDate}
+          appointments={getDayAppointments(currentDate)}
+          getClient={getClient}
+        />
+      )}
+
+      {calendarViewMode === 'week' && (
+        <WeekView 
+          days={daysInView}
+          appointments={filteredAppointments}
+          getClient={getClient}
+          onSelectDay={handleSelectDay}
+        />
+      )}
+
+      {calendarViewMode === 'month' && (
+        <MonthView 
+          days={daysInView}
+          currentDate={currentDate}
+          appointments={filteredAppointments}
+          getClient={getClient}
+          onSelectDay={handleSelectDay}
+        />
+      )}
+    </div>
+  );
+};
+
+// Day View Component
+interface DayViewProps {
+  currentDate: Date;
+  appointments: Appointment[];
+  getClient: (id: string) => any;
+}
+
+const DayView: React.FC<DayViewProps> = ({ currentDate, appointments, getClient }) => {
+  const navigate = useNavigate();
+  const hours = Array.from({ length: 14 }, (_, i) => i + 8); // 8AM to 9PM
+  
+  // Group appointments by hour
+  const appointmentsByHour: { [hour: number]: Appointment[] } = {};
+  
+  hours.forEach(hour => {
+    appointmentsByHour[hour] = appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.date);
+      return appointmentDate.getHours() === hour;
+    });
+  });
+  
+  const handleAppointmentClick = (appointment: Appointment) => {
+    navigate(`/appointments/${appointment.id}`);
+  };
+  
+  return (
+    <Card className="border rounded-md">
+      <CardHeader>
+        <CardTitle className="text-lg font-medium">
+          {format(currentDate, 'EEEE d MMMM yyyy', { locale: it })}
+        </CardTitle>
+        <CardDescription>
+          {appointments.length} appuntamenti programmati
+        </CardDescription>
       </CardHeader>
-      
       <CardContent>
-        {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-px bg-muted rounded-lg overflow-hidden">
-          {/* Weekday headers */}
-          {weekDays.map((day, index) => (
-            <div 
-              key={index} 
-              className="bg-background h-10 flex items-center justify-center text-sm font-medium"
-            >
-              {day}
-            </div>
-          ))}
-          
-          {/* Empty cells for days before the first day of month */}
-          {Array.from({ length: firstDayOfMonth }).map((_, index) => (
-            <div key={`empty-${index}`} className="bg-background p-2 h-32" />
-          ))}
-          
-          {/* Days of the month */}
-          {daysInMonth.map((day) => {
-            const dayAppointments = getAppointmentsForDay(day);
-            const hasAppointments = dayAppointments.length > 0;
-            
-            return (
-              <div 
-                key={day.toISOString()} 
-                className={`bg-background p-2 h-32 overflow-hidden transition-colors ${
-                  isToday(day) ? "bg-derma-50" : ""
-                } hover:bg-muted/50 cursor-pointer`}
-                onClick={() => {
-                  const queryParams = new URLSearchParams();
-                  queryParams.append('date', format(day, 'yyyy-MM-dd'));
-                  navigate(`/appointments?${queryParams.toString()}`);
-                }}
-              >
-                <div className="font-medium text-sm mb-1 sticky top-0 bg-background">
-                  {format(day, 'd')}
-                </div>
-                
-                {hasAppointments ? (
-                  <div className="space-y-1">
-                    {dayAppointments.slice(0, 3).map((appointment) => {
+        <div className="space-y-1">
+          {hours.map(hour => (
+            <div key={hour} className="grid grid-cols-12 min-h-[60px] border-t py-1">
+              <div className="col-span-1 text-sm text-muted-foreground pt-2 font-medium">
+                {hour}:00
+              </div>
+              <div className="col-span-11 pl-2">
+                {appointmentsByHour[hour].length > 0 ? (
+                  <div className="flex flex-col gap-1">
+                    {appointmentsByHour[hour].map(appointment => {
                       const client = getClient(appointment.clientId);
-                      const isCompleted = new Date(appointment.date) < new Date();
-                      
                       return (
-                        <HoverCard key={appointment.id}>
-                          <HoverCardTrigger asChild>
-                            <div 
-                              className={`text-xs px-1 py-0.5 rounded truncate ${
-                                isCompleted ? "bg-muted text-muted-foreground" : "bg-derma-100 text-derma-800"
-                              }`}
-                            >
-                              {format(new Date(appointment.date), 'HH:mm')} - {client?.lastName || ''}
-                            </div>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80 p-0">
-                            <div className="p-4">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <div className="font-medium">{appointment.treatment}</div>
-                                  <div className="text-sm text-muted-foreground">
-                                    {format(new Date(appointment.date), 'HH:mm')}
-                                  </div>
-                                </div>
-                                <Badge variant={isCompleted ? "outline" : "default"}>
-                                  {isCompleted ? "Completato" : "Programmato"}
-                                </Badge>
-                              </div>
-                              
-                              <Separator className="my-2" />
-                              
-                              {client && (
-                                <div className="flex items-center space-x-2 text-sm">
-                                  <User className="h-3.5 w-3.5 text-muted-foreground" />
-                                  <span>{client.firstName} {client.lastName}</span>
-                                </div>
-                              )}
-                              
-                              <div className="flex items-center space-x-2 text-sm mt-1">
-                                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                                <span>{appointment.doctor}</span>
-                              </div>
-                              
-                              <Button 
-                                variant="link" 
-                                className="px-0 h-auto text-sm mt-2"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/appointments/${appointment.id}`);
-                                }}
-                              >
-                                Visualizza dettagli
-                              </Button>
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
+                        <div
+                          key={appointment.id}
+                          className="rounded-md bg-derma-100 p-2 text-sm cursor-pointer hover:bg-derma-200 transition-colors"
+                          onClick={() => handleAppointmentClick(appointment)}
+                        >
+                          <div className="font-medium">
+                            {format(new Date(appointment.date), 'HH:mm')} - {client.firstName} {client.lastName}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {appointment.treatment} con {appointment.doctor}
+                          </div>
+                        </div>
                       );
                     })}
-                    
-                    {dayAppointments.length > 3 && (
-                      <div className="text-xs text-muted-foreground">
-                        +{dayAppointments.length - 3} altri appuntamenti
-                      </div>
-                    )}
                   </div>
                 ) : null}
               </div>
-            );
-          })}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Week View Component
+interface WeekViewProps {
+  days: Date[];
+  appointments: Appointment[];
+  getClient: (id: string) => any;
+  onSelectDay: (day: Date) => void;
+}
+
+const WeekView: React.FC<WeekViewProps> = ({ days, appointments, getClient, onSelectDay }) => {
+  const navigate = useNavigate();
+  
+  const getDayAppointments = (day: Date) => {
+    return appointments.filter(appointment => 
+      isSameDay(new Date(appointment.date), day)
+    );
+  };
+  
+  const handleAppointmentClick = (appointment: Appointment) => {
+    navigate(`/appointments/${appointment.id}`);
+  };
+  
+  return (
+    <Card className="border rounded-md">
+      <CardHeader>
+        <CardTitle className="text-lg font-medium">
+          Settimana dal {format(days[0], 'd MMMM', { locale: it })} al {format(days[days.length-1], 'd MMMM yyyy', { locale: it })}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-7 gap-2">
+          {days.map(day => (
+            <div 
+              key={day.toString()}
+              className={`border rounded-md p-2 min-h-[120px] hover:bg-muted/50 cursor-pointer transition-colors ${
+                isToday(day) ? 'bg-muted border-primary' : ''
+              }`}
+              onClick={() => onSelectDay(day)}
+            >
+              <div className="font-medium text-sm mb-1">
+                {format(day, 'EEEE', { locale: it })}
+              </div>
+              <div className={`text-xl mb-2 font-bold ${isToday(day) ? 'text-primary' : ''}`}>
+                {format(day, 'd', { locale: it })}
+              </div>
+              
+              {getDayAppointments(day).length > 0 ? (
+                <ScrollArea className="h-[180px]">
+                  <div className="space-y-1">
+                    {getDayAppointments(day).map(appointment => {
+                      const client = getClient(appointment.clientId);
+                      return (
+                        <div
+                          key={appointment.id}
+                          className="rounded-md bg-derma-100 p-1 text-xs cursor-pointer hover:bg-derma-200 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAppointmentClick(appointment);
+                          }}
+                        >
+                          <div className="font-medium">
+                            {format(new Date(appointment.date), 'HH:mm')}
+                          </div>
+                          <div className="truncate">
+                            {client.firstName} {client.lastName}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              ) : (
+                <div className="text-xs text-muted-foreground">
+                  Nessun appuntamento
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Month View Component
+interface MonthViewProps {
+  days: Date[];
+  currentDate: Date;
+  appointments: Appointment[];
+  getClient: (id: string) => any;
+  onSelectDay: (day: Date) => void;
+}
+
+const MonthView: React.FC<MonthViewProps> = ({ days, currentDate, appointments, getClient, onSelectDay }) => {
+  const navigate = useNavigate();
+  
+  const handleAppointmentClick = (appointmentId: string) => {
+    navigate(`/appointments/${appointmentId}`);
+  };
+  
+  // Get current month start and end
+  const currentMonthStart = startOfMonth(currentDate);
+  const currentMonthEnd = endOfMonth(currentDate);
+  
+  // Add days from previous month to complete first week
+  const startDayOfWeek = currentMonthStart.getDay() || 7; // Convert Sunday (0) to 7
+  const daysToAdd = startDayOfWeek - 1; // Number of days needed from previous month
+  
+  const startDate = addDays(currentMonthStart, -daysToAdd);
+  
+  // Add days to complete 6 weeks (42 days) if needed
+  const endDate = addDays(startDate, 41);
+  
+  const allDaysInCalendar = eachDayOfInterval({
+    start: startDate,
+    end: endDate,
+  });
+  
+  const weeks = [];
+  for (let i = 0; i < allDaysInCalendar.length; i += 7) {
+    weeks.push(allDaysInCalendar.slice(i, i + 7));
+  }
+  
+  // Get appointments for a day
+  const getDayAppointments = (day: Date) => {
+    return appointments.filter(appointment => 
+      isSameDay(new Date(appointment.date), day)
+    );
+  };
+  
+  return (
+    <Card className="border rounded-md">
+      <CardContent className="pt-6">
+        {/* Weekday headers */}
+        <div className="grid grid-cols-7 gap-1 mb-2 text-center">
+          {['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'].map((day, i) => (
+            <div key={i} className="font-medium text-sm text-muted-foreground">
+              {day}
+            </div>
+          ))}
+        </div>
+        
+        {/* Calendar grid */}
+        <div className="space-y-1">
+          {weeks.map((week, weekIndex) => (
+            <div key={weekIndex} className="grid grid-cols-7 gap-1">
+              {week.map((day) => {
+                const dayAppointments = getDayAppointments(day);
+                const isCurrentMonth = isSameMonth(day, currentDate);
+                
+                return (
+                  <div
+                    key={day.toString()}
+                    className={`
+                      border rounded-md p-1 min-h-[100px] 
+                      ${isToday(day) ? 'bg-muted border-primary' : ''} 
+                      ${!isCurrentMonth ? 'opacity-40' : ''}
+                      hover:bg-muted/50 cursor-pointer transition-colors
+                    `}
+                    onClick={() => onSelectDay(day)}
+                  >
+                    <div className={`text-right text-sm ${isToday(day) ? 'font-bold text-primary' : ''}`}>
+                      {format(day, 'd')}
+                    </div>
+                    
+                    {dayAppointments.length > 0 ? (
+                      <div className="mt-1">
+                        {dayAppointments.length <= 3 ? (
+                          <div className="space-y-1">
+                            {dayAppointments.slice(0, 3).map(appointment => {
+                              const client = getClient(appointment.clientId);
+                              return (
+                                <HoverCard key={appointment.id}>
+                                  <HoverCardTrigger asChild>
+                                    <div 
+                                      className="truncate text-xs bg-derma-100 rounded px-1 py-0.5 cursor-pointer hover:bg-derma-200"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleAppointmentClick(appointment.id);
+                                      }}
+                                    >
+                                      {format(new Date(appointment.date), 'HH:mm')} {client?.firstName} {client?.lastName}
+                                    </div>
+                                  </HoverCardTrigger>
+                                  <HoverCardContent side="right" className="w-80">
+                                    <div className="space-y-2">
+                                      <div className="flex items-start gap-2">
+                                        <User className="h-4 w-4 mt-0.5" />
+                                        <div>
+                                          <h4 className="font-medium">{client?.firstName} {client?.lastName}</h4>
+                                          <p className="text-xs text-muted-foreground">{client?.phone}</p>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-start gap-2">
+                                        <Clock className="h-4 w-4 mt-0.5" />
+                                        <div>
+                                          <p className="text-sm">{format(new Date(appointment.date), 'HH:mm')} - {appointment.treatment}</p>
+                                          <p className="text-xs text-muted-foreground">Con {appointment.doctor}</p>
+                                        </div>
+                                      </div>
+                                      {appointment.notes && (
+                                        <p className="text-xs text-muted-foreground border-t pt-1 mt-1">
+                                          {appointment.notes.length > 100 
+                                            ? `${appointment.notes.substring(0, 100)}...` 
+                                            : appointment.notes}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </HoverCardContent>
+                                </HoverCard>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <HoverCard>
+                            <HoverCardTrigger asChild>
+                              <div className="text-xs bg-derma-100 rounded px-1 py-0.5 text-center">
+                                {dayAppointments.length} appuntamenti
+                              </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent side="right" className="w-80">
+                              <ScrollArea className="h-[200px]">
+                                <div className="space-y-2 py-1">
+                                  {dayAppointments.map(appointment => {
+                                    const client = getClient(appointment.clientId);
+                                    return (
+                                      <div 
+                                        key={appointment.id} 
+                                        className="text-sm p-2 border-b last:border-0 hover:bg-muted rounded cursor-pointer"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleAppointmentClick(appointment.id);
+                                        }}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <Badge variant="outline" className="whitespace-nowrap">
+                                            {format(new Date(appointment.date), 'HH:mm')}
+                                          </Badge>
+                                          <div className="font-medium">{client?.firstName} {client?.lastName}</div>
+                                        </div>
+                                        <div className="text-xs text-muted-foreground mt-1">
+                                          {appointment.treatment} con {appointment.doctor}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </ScrollArea>
+                            </HoverCardContent>
+                          </HoverCard>
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>

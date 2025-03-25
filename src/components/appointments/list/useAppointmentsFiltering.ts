@@ -6,18 +6,25 @@ import {
   subDays, 
   isSameDay,
   isAfter,
-  isBefore
+  isBefore,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  isWithinInterval
 } from 'date-fns';
 import { Appointment } from '@/context/types';
 import { useCrm } from '@/context/CrmContext';
 
 export type AppointmentStatus = 'all' | 'upcoming' | 'completed';
+export type CalendarViewMode = 'day' | 'week' | 'month';
 
 export const useAppointmentsFiltering = () => {
   const { appointments, getClient, doctors } = useCrm();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentDate, setCurrentDate] = useState(startOfDay(new Date()));
   const [viewMode, setViewMode] = useState<'day' | 'all'>('day');
+  const [calendarViewMode, setCalendarViewMode] = useState<CalendarViewMode>('month');
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<AppointmentStatus>('all');
 
@@ -32,6 +39,28 @@ export const useAppointmentsFiltering = () => {
 
   const handleToday = () => {
     setCurrentDate(startOfDay(new Date()));
+  };
+
+  // Get date range based on calendar view mode
+  const getDateRange = () => {
+    switch (calendarViewMode) {
+      case 'day':
+        return {
+          start: startOfDay(currentDate),
+          end: addDays(startOfDay(currentDate), 1)
+        };
+      case 'week':
+        return {
+          start: startOfWeek(currentDate, { weekStartsOn: 1 }),
+          end: endOfWeek(currentDate, { weekStartsOn: 1 })
+        };
+      case 'month':
+      default:
+        return {
+          start: startOfMonth(currentDate),
+          end: endOfMonth(currentDate)
+        };
+    }
   };
 
   // Filter appointments based on search query, selected date, doctor, and status
@@ -86,8 +115,11 @@ export const useAppointmentsFiltering = () => {
     searchQuery,
     setSearchQuery,
     currentDate,
+    setCurrentDate,
     viewMode,
     setViewMode,
+    calendarViewMode,
+    setCalendarViewMode,
     handlePreviousDay,
     handleNextDay,
     handleToday,
@@ -100,6 +132,7 @@ export const useAppointmentsFiltering = () => {
     doctorsOptions: [
       { id: 'all', name: 'Tutti i dottori' },
       ...doctors.map(doctor => ({ id: doctor, name: doctor }))
-    ]
+    ],
+    getDateRange
   };
 };
