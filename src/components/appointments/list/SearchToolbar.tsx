@@ -40,6 +40,10 @@ const SearchToolbar: React.FC<SearchToolbarProps> = ({
   onStatusChange
 }) => {
   const { doctors } = useCrm();
+  const doctorsOptions = [
+    { id: 'all', name: 'Tutti i dottori' },
+    ...doctors.map(doctor => ({ id: doctor, name: doctor }))
+  ];
   
   return (
     <div className="space-y-4">
@@ -106,10 +110,9 @@ const SearchToolbar: React.FC<SearchToolbarProps> = ({
             <SelectValue placeholder="Filtra per dottore" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tutti i dottori</SelectItem>
-            {doctors.map((doctor) => (
-              <SelectItem key={doctor.id} value={doctor.id}>
-                {doctor.name}
+            {doctorsOptions.map((doctorOption) => (
+              <SelectItem key={doctorOption.id} value={doctorOption.id}>
+                {doctorOption.name}
               </SelectItem>
             ))}
           </SelectContent>

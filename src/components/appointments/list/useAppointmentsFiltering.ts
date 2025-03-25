@@ -96,6 +96,10 @@ export const useAppointmentsFiltering = () => {
     selectedDoctorId,
     setSelectedDoctorId,
     selectedStatus,
-    setSelectedStatus
+    setSelectedStatus,
+    doctorsOptions: [
+      { id: 'all', name: 'Tutti i dottori' },
+      ...doctors.map(doctor => ({ id: doctor, name: doctor }))
+    ]
   };
 };

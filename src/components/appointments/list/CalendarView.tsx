@@ -55,13 +55,16 @@ const CalendarView: React.FC<CalendarViewProps> = ({
   const { appointments, getClient, doctors } = useCrm();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   
+  const doctorsOptions = [
+    { id: 'all', name: 'Tutti i dottori' },
+    ...doctors.map(doctor => ({ id: doctor, name: doctor }))
+  ];
+  
   // Filter appointments
   const filteredAppointments = appointments.filter(appointment => {
     // Filter by doctor
-    if (selectedDoctorId !== 'all') {
-      const doctorObject = doctors.find(d => d.id === selectedDoctorId);
-      if (!doctorObject) return false;
-      if (appointment.doctor !== doctorObject.name) return false;
+    if (selectedDoctorId !== 'all' && appointment.doctor !== selectedDoctorId) {
+      return false;
     }
     
     // Filter by status
@@ -147,10 +150,9 @@ const CalendarView: React.FC<CalendarViewProps> = ({
               <SelectValue placeholder="Filtra per dottore" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tutti i dottori</SelectItem>
-              {doctors.map((doctor) => (
-                <SelectItem key={doctor.id} value={doctor.id}>
-                  {doctor.name}
+              {doctorsOptions.map((doctorOption) => (
+                <SelectItem key={doctorOption.id} value={doctorOption.id}>
+                  {doctorOption.name}
                 </SelectItem>
               ))}
             </SelectContent>
