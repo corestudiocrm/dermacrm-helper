@@ -12,7 +12,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ title }) => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
           <Link to="/" className="text-xl font-semibold text-primary">
-            Studio Dermatologico
+            Studio Francia
           </Link>
           {title && (
             <>
