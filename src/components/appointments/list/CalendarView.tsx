@@ -5,31 +5,21 @@ import {
   startOfDay,
   endOfDay,
   isSameDay,
-  isSameMonth,
-  isToday,
   eachDayOfInterval,
   addDays,
   startOfWeek,
   endOfWeek,
   startOfMonth,
   endOfMonth,
-  isWithinInterval,
-  parseISO,
   addMonths,
   subMonths,
   addWeeks,
-  subWeeks
+  subWeeks,
+  isBefore
 } from 'date-fns';
 import { it } from 'date-fns/locale';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Calendar as CalendarIcon,
-  User,
-  Clock
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
   Select,
   SelectContent,
@@ -37,30 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
-import { Appointment } from '@/context/types';
+import { useNavigate } from 'react-router-dom';
 import { useCrm } from '@/context/CrmContext';
 import { 
   AppointmentStatus, 
   CalendarViewMode,
-  useAppointmentsFiltering 
 } from './useAppointmentsFiltering';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useNavigate } from 'react-router-dom';
+import { DayView, WeekView, MonthView } from './views';
 
 interface CalendarViewProps {
   selectedDoctorId: string;
@@ -95,7 +68,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     // Filter by status
     if (selectedStatus !== 'all') {
       const now = new Date();
-      const isUpcoming = isAfter(new Date(appointment.date), now);
+      const isUpcoming = isBefore(now, new Date(appointment.date));
       
       if (selectedStatus === 'upcoming' && !isUpcoming) {
         return false;
@@ -274,342 +247,6 @@ const CalendarView: React.FC<CalendarViewProps> = ({
         />
       )}
     </div>
-  );
-};
-
-// Day View Component
-interface DayViewProps {
-  currentDate: Date;
-  appointments: Appointment[];
-  getClient: (id: string) => any;
-}
-
-const DayView: React.FC<DayViewProps> = ({ currentDate, appointments, getClient }) => {
-  const navigate = useNavigate();
-  const hours = Array.from({ length: 14 }, (_, i) => i + 8); // 8AM to 9PM
-  
-  // Group appointments by hour
-  const appointmentsByHour: { [hour: number]: Appointment[] } = {};
-  
-  hours.forEach(hour => {
-    appointmentsByHour[hour] = appointments.filter(appointment => {
-      const appointmentDate = new Date(appointment.date);
-      return appointmentDate.getHours() === hour;
-    });
-  });
-  
-  const handleAppointmentClick = (appointment: Appointment) => {
-    navigate(`/appointments/${appointment.id}`);
-  };
-  
-  return (
-    <Card className="border rounded-md">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">
-          {format(currentDate, 'EEEE d MMMM yyyy', { locale: it })}
-        </CardTitle>
-        <CardDescription>
-          {appointments.length} appuntamenti programmati
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-1">
-          {hours.map(hour => (
-            <div key={hour} className="grid grid-cols-12 min-h-[60px] border-t py-1">
-              <div className="col-span-1 text-sm text-muted-foreground pt-2 font-medium">
-                {hour}:00
-              </div>
-              <div className="col-span-11 pl-2">
-                {appointmentsByHour[hour].length > 0 ? (
-                  <div className="flex flex-col gap-1">
-                    {appointmentsByHour[hour].map(appointment => {
-                      const client = getClient(appointment.clientId);
-                      return (
-                        <div
-                          key={appointment.id}
-                          className="rounded-md bg-derma-100 p-2 text-sm cursor-pointer hover:bg-derma-200 transition-colors"
-                          onClick={() => handleAppointmentClick(appointment)}
-                        >
-                          <div className="font-medium">
-                            {format(new Date(appointment.date), 'HH:mm')} - {client.firstName} {client.lastName}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {appointment.treatment} con {appointment.doctor}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-// Week View Component
-interface WeekViewProps {
-  days: Date[];
-  appointments: Appointment[];
-  getClient: (id: string) => any;
-  onSelectDay: (day: Date) => void;
-}
-
-const WeekView: React.FC<WeekViewProps> = ({ days, appointments, getClient, onSelectDay }) => {
-  const navigate = useNavigate();
-  
-  const getDayAppointments = (day: Date) => {
-    return appointments.filter(appointment => 
-      isSameDay(new Date(appointment.date), day)
-    );
-  };
-  
-  const handleAppointmentClick = (appointment: Appointment) => {
-    navigate(`/appointments/${appointment.id}`);
-  };
-  
-  return (
-    <Card className="border rounded-md">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">
-          Settimana dal {format(days[0], 'd MMMM', { locale: it })} al {format(days[days.length-1], 'd MMMM yyyy', { locale: it })}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-7 gap-2">
-          {days.map(day => (
-            <div 
-              key={day.toString()}
-              className={`border rounded-md p-2 min-h-[120px] hover:bg-muted/50 cursor-pointer transition-colors ${
-                isToday(day) ? 'bg-muted border-primary' : ''
-              }`}
-              onClick={() => onSelectDay(day)}
-            >
-              <div className="font-medium text-sm mb-1">
-                {format(day, 'EEEE', { locale: it })}
-              </div>
-              <div className={`text-xl mb-2 font-bold ${isToday(day) ? 'text-primary' : ''}`}>
-                {format(day, 'd', { locale: it })}
-              </div>
-              
-              {getDayAppointments(day).length > 0 ? (
-                <ScrollArea className="h-[180px]">
-                  <div className="space-y-1">
-                    {getDayAppointments(day).map(appointment => {
-                      const client = getClient(appointment.clientId);
-                      return (
-                        <div
-                          key={appointment.id}
-                          className="rounded-md bg-derma-100 p-1 text-xs cursor-pointer hover:bg-derma-200 transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAppointmentClick(appointment);
-                          }}
-                        >
-                          <div className="font-medium">
-                            {format(new Date(appointment.date), 'HH:mm')}
-                          </div>
-                          <div className="truncate">
-                            {client.firstName} {client.lastName}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </ScrollArea>
-              ) : (
-                <div className="text-xs text-muted-foreground">
-                  Nessun appuntamento
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-// Month View Component
-interface MonthViewProps {
-  days: Date[];
-  currentDate: Date;
-  appointments: Appointment[];
-  getClient: (id: string) => any;
-  onSelectDay: (day: Date) => void;
-}
-
-const MonthView: React.FC<MonthViewProps> = ({ days, currentDate, appointments, getClient, onSelectDay }) => {
-  const navigate = useNavigate();
-  
-  const handleAppointmentClick = (appointmentId: string) => {
-    navigate(`/appointments/${appointmentId}`);
-  };
-  
-  // Get current month start and end
-  const currentMonthStart = startOfMonth(currentDate);
-  const currentMonthEnd = endOfMonth(currentDate);
-  
-  // Add days from previous month to complete first week
-  const startDayOfWeek = currentMonthStart.getDay() || 7; // Convert Sunday (0) to 7
-  const daysToAdd = startDayOfWeek - 1; // Number of days needed from previous month
-  
-  const startDate = addDays(currentMonthStart, -daysToAdd);
-  
-  // Add days to complete 6 weeks (42 days) if needed
-  const endDate = addDays(startDate, 41);
-  
-  const allDaysInCalendar = eachDayOfInterval({
-    start: startDate,
-    end: endDate,
-  });
-  
-  const weeks = [];
-  for (let i = 0; i < allDaysInCalendar.length; i += 7) {
-    weeks.push(allDaysInCalendar.slice(i, i + 7));
-  }
-  
-  // Get appointments for a day
-  const getDayAppointments = (day: Date) => {
-    return appointments.filter(appointment => 
-      isSameDay(new Date(appointment.date), day)
-    );
-  };
-  
-  return (
-    <Card className="border rounded-md">
-      <CardContent className="pt-6">
-        {/* Weekday headers */}
-        <div className="grid grid-cols-7 gap-1 mb-2 text-center">
-          {['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'].map((day, i) => (
-            <div key={i} className="font-medium text-sm text-muted-foreground">
-              {day}
-            </div>
-          ))}
-        </div>
-        
-        {/* Calendar grid */}
-        <div className="space-y-1">
-          {weeks.map((week, weekIndex) => (
-            <div key={weekIndex} className="grid grid-cols-7 gap-1">
-              {week.map((day) => {
-                const dayAppointments = getDayAppointments(day);
-                const isCurrentMonth = isSameMonth(day, currentDate);
-                
-                return (
-                  <div
-                    key={day.toString()}
-                    className={`
-                      border rounded-md p-1 min-h-[100px] 
-                      ${isToday(day) ? 'bg-muted border-primary' : ''} 
-                      ${!isCurrentMonth ? 'opacity-40' : ''}
-                      hover:bg-muted/50 cursor-pointer transition-colors
-                    `}
-                    onClick={() => onSelectDay(day)}
-                  >
-                    <div className={`text-right text-sm ${isToday(day) ? 'font-bold text-primary' : ''}`}>
-                      {format(day, 'd')}
-                    </div>
-                    
-                    {dayAppointments.length > 0 ? (
-                      <div className="mt-1">
-                        {dayAppointments.length <= 3 ? (
-                          <div className="space-y-1">
-                            {dayAppointments.slice(0, 3).map(appointment => {
-                              const client = getClient(appointment.clientId);
-                              return (
-                                <HoverCard key={appointment.id}>
-                                  <HoverCardTrigger asChild>
-                                    <div 
-                                      className="truncate text-xs bg-derma-100 rounded px-1 py-0.5 cursor-pointer hover:bg-derma-200"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleAppointmentClick(appointment.id);
-                                      }}
-                                    >
-                                      {format(new Date(appointment.date), 'HH:mm')} {client?.firstName} {client?.lastName}
-                                    </div>
-                                  </HoverCardTrigger>
-                                  <HoverCardContent side="right" className="w-80">
-                                    <div className="space-y-2">
-                                      <div className="flex items-start gap-2">
-                                        <User className="h-4 w-4 mt-0.5" />
-                                        <div>
-                                          <h4 className="font-medium">{client?.firstName} {client?.lastName}</h4>
-                                          <p className="text-xs text-muted-foreground">{client?.phone}</p>
-                                        </div>
-                                      </div>
-                                      <div className="flex items-start gap-2">
-                                        <Clock className="h-4 w-4 mt-0.5" />
-                                        <div>
-                                          <p className="text-sm">{format(new Date(appointment.date), 'HH:mm')} - {appointment.treatment}</p>
-                                          <p className="text-xs text-muted-foreground">Con {appointment.doctor}</p>
-                                        </div>
-                                      </div>
-                                      {appointment.notes && (
-                                        <p className="text-xs text-muted-foreground border-t pt-1 mt-1">
-                                          {appointment.notes.length > 100 
-                                            ? `${appointment.notes.substring(0, 100)}...` 
-                                            : appointment.notes}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </HoverCardContent>
-                                </HoverCard>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <HoverCard>
-                            <HoverCardTrigger asChild>
-                              <div className="text-xs bg-derma-100 rounded px-1 py-0.5 text-center">
-                                {dayAppointments.length} appuntamenti
-                              </div>
-                            </HoverCardTrigger>
-                            <HoverCardContent side="right" className="w-80">
-                              <ScrollArea className="h-[200px]">
-                                <div className="space-y-2 py-1">
-                                  {dayAppointments.map(appointment => {
-                                    const client = getClient(appointment.clientId);
-                                    return (
-                                      <div 
-                                        key={appointment.id} 
-                                        className="text-sm p-2 border-b last:border-0 hover:bg-muted rounded cursor-pointer"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleAppointmentClick(appointment.id);
-                                        }}
-                                      >
-                                        <div className="flex items-center gap-2">
-                                          <Badge variant="outline" className="whitespace-nowrap">
-                                            {format(new Date(appointment.date), 'HH:mm')}
-                                          </Badge>
-                                          <div className="font-medium">{client?.firstName} {client?.lastName}</div>
-                                        </div>
-                                        <div className="text-xs text-muted-foreground mt-1">
-                                          {appointment.treatment} con {appointment.doctor}
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </ScrollArea>
-                            </HoverCardContent>
-                          </HoverCard>
-                        )}
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
   );
 };
 
