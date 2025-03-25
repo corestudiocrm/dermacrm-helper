@@ -86,7 +86,7 @@ export const CrmProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sendWhatsAppReminder
   } = createAppointmentFunctions(appointments, setAppointments, getClient);
 
-  const value = {
+  const value: CrmContextType = {
     clients,
     appointments,
     addClient,

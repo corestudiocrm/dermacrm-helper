@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 import { Client, Measurement, Attachment, Invoice, Consent } from './types';
 
@@ -9,9 +8,10 @@ export const createClientFunctions = (
   setAppointments: React.Dispatch<React.SetStateAction<any[]>>
 ) => {
   const addClient = (client: Omit<Client, 'id' | 'measurements'>) => {
+    const newClientId = Date.now().toString();
     const newClient: Client = {
       ...client,
-      id: Date.now().toString(),
+      id: newClientId,
       measurements: [],
       attachments: [],
       invoices: [],
@@ -19,6 +19,7 @@ export const createClientFunctions = (
     };
     setClients([...clients, newClient]);
     toast.success('Cliente aggiunto con successo');
+    return newClientId; // Return the client ID
   };
 
   const updateClient = (updatedClient: Client) => {

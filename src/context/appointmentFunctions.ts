@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Appointment } from './types';
@@ -10,12 +9,14 @@ export const createAppointmentFunctions = (
   getClient: (id: string) => any
 ) => {
   const addAppointment = (appointment: Omit<Appointment, 'id'>) => {
+    const newAppointmentId = Date.now().toString();
     const newAppointment: Appointment = {
       ...appointment,
-      id: Date.now().toString()
+      id: newAppointmentId
     };
-    setAppointments([...appointments, newAppointment]);
+    setAppointments(prevAppointments => [...prevAppointments, newAppointment]);
     toast.success('Appuntamento aggiunto con successo');
+    return newAppointmentId;
   };
 
   const updateAppointment = (updatedAppointment: Appointment) => {
@@ -103,8 +104,8 @@ export const createAppointmentFunctions = (
       notes: appointmentData.notes
     };
     
-    addAppointment(appointment);
-    return { clientId, appointmentId: appointments[appointments.length - 1]?.id };
+    const appointmentId = addAppointment(appointment);
+    return { clientId, appointmentId };
   };
 
   // WhatsApp integration

@@ -2,10 +2,11 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Copy } from 'lucide-react';
 import { useCrm } from '@/context/CrmContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface AppointmentConfirmationProps {
   clientId: string;
@@ -21,10 +22,22 @@ const AppointmentConfirmation: React.FC<AppointmentConfirmationProps> = ({
   const client = getClient(clientId);
   const appointment = appointments.find(a => a.id === appointmentId);
   
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(clientId);
+    toast.success('Codice cliente copiato negli appunti');
+  };
+  
   if (!client || !appointment) {
     return (
       <div className="text-center py-8">
-        <p>Impossibile trovare i dettagli della prenotazione</p>
+        <p className="text-red-500 font-medium">Impossibile trovare i dettagli della prenotazione</p>
+        <p className="text-sm text-muted-foreground mt-2">ID Cliente: {clientId}</p>
+        <p className="text-sm text-muted-foreground">ID Appuntamento: {appointmentId}</p>
+        <div className="mt-4">
+          <Link to="/landing/new">
+            <Button variant="outline">Torna alla pagina di prenotazione</Button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -38,11 +51,6 @@ const AppointmentConfirmation: React.FC<AppointmentConfirmationProps> = ({
       <h1 className="text-2xl font-semibold text-center">Appuntamento Confermato!</h1>
       
       <div className="space-y-4 text-left">
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Codice Cliente</p>
-          <p className="font-medium">{clientId}</p>
-        </div>
-        
         <div className="space-y-1">
           <p className="text-sm text-muted-foreground">Nome</p>
           <p className="font-medium">{client.firstName} {client.lastName}</p>
@@ -67,10 +75,15 @@ const AppointmentConfirmation: React.FC<AppointmentConfirmationProps> = ({
       </div>
       
       <div className="bg-primary/10 p-4 rounded-md mt-6">
-        <p className="text-sm font-medium">Salva il tuo codice cliente</p>
-        <p className="text-primary text-lg font-semibold mt-1">{clientId}</p>
+        <p className="text-sm font-medium">Codice Cliente Univoco</p>
+        <div className="flex items-center justify-center mt-1 space-x-2">
+          <p className="text-primary text-lg font-semibold">{clientId}</p>
+          <button onClick={copyToClipboard} className="text-muted-foreground hover:text-primary">
+            <Copy className="h-4 w-4" />
+          </button>
+        </div>
         <p className="text-xs text-muted-foreground mt-1">
-          Potrai utilizzarlo per accedere e gestire i tuoi appuntamenti in futuro
+          Conserva con cura questo codice. Ti servirà per accedere e gestire i tuoi appuntamenti in futuro
         </p>
       </div>
       
