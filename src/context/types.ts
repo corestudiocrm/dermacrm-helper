@@ -1,3 +1,4 @@
+
 // Define types
 export type Treatment = 
   'Laser' | 
@@ -92,7 +93,7 @@ export interface Client {
 export interface CrmContextType {
   clients: Client[];
   appointments: Appointment[];
-  addClient: (client: Omit<Client, 'id' | 'measurements'>) => void;
+  addClient: (client: Omit<Client, 'id' | 'measurements'>) => string;
   updateClient: (client: Client) => void;
   deleteClient: (id: string) => void;
   getClient: (id: string) => Client | undefined;
@@ -116,4 +117,10 @@ export interface CrmContextType {
   addConsent: (clientId: string, consent: Omit<Consent, 'id'>) => void;
   updateConsent: (clientId: string, consent: Consent) => void;
   deleteConsent: (clientId: string, consentId: string) => void;
+  getAvailableTimeSlots: (date: Date, duration?: number) => Array<{time: Date, isAvailable: boolean}>;
+  bookAppointmentForNewClient: (
+    clientData: { firstName: string; lastName: string; phone: string; email: string },
+    appointmentData: { date: Date; treatment: string; doctor: string; notes: string },
+    addClient: (client: any) => string
+  ) => { clientId: string; appointmentId: string };
 }

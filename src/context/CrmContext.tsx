@@ -81,6 +81,8 @@ export const CrmProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateAppointment,
     deleteAppointment,
     getClientAppointments,
+    getAvailableTimeSlots,
+    bookAppointmentForNewClient,
     sendWhatsAppReminder
   } = createAppointmentFunctions(appointments, setAppointments, getClient);
 
@@ -110,7 +112,9 @@ export const CrmProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     deleteInvoice,
     addConsent,
     updateConsent,
-    deleteConsent
+    deleteConsent,
+    getAvailableTimeSlots,
+    bookAppointmentForNewClient
   };
 
   return <CrmContext.Provider value={value}>{children}</CrmContext.Provider>;

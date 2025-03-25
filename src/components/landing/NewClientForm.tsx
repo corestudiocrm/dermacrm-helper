@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -41,7 +40,7 @@ interface NewClientFormProps {
 }
 
 const NewClientForm: React.FC<NewClientFormProps> = ({ selectedTimeSlot, onSubmitSuccess }) => {
-  const { treatments, doctors, bookAppointmentForNewClient, addClient } = useCrm() as any;
+  const { treatments, doctors, bookAppointmentForNewClient, addClient } = useCrm();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,14 +75,19 @@ const NewClientForm: React.FC<NewClientFormProps> = ({ selectedTimeSlot, onSubmi
       notes: values.notes || '',
     };
 
-    // Book appointment and create client
-    const { clientId, appointmentId } = bookAppointmentForNewClient(
-      clientData,
-      appointmentData,
-      addClient
-    );
-
-    onSubmitSuccess(clientId, appointmentId);
+    try {
+      // Book appointment and create client
+      const result = bookAppointmentForNewClient(
+        clientData,
+        appointmentData,
+        addClient
+      );
+      
+      onSubmitSuccess(result.clientId, result.appointmentId);
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      form.setError('root', { message: 'Si è verificato un errore durante la prenotazione' });
+    }
   };
 
   return (
@@ -221,6 +225,10 @@ const NewClientForm: React.FC<NewClientFormProps> = ({ selectedTimeSlot, onSubmi
             </FormItem>
           )}
         />
+
+        {form.formState.errors.root && (
+          <p className="text-sm font-medium text-destructive">{form.formState.errors.root.message}</p>
+        )}
 
         <div className="pt-4">
           <Button type="submit" className="w-full md:w-auto" size="lg">
