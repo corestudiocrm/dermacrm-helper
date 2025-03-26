@@ -8,7 +8,7 @@ import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import StatisticsSection from '@/components/dashboard/StatisticsSection';
 import AppointmentsList from '@/components/dashboard/AppointmentsList';
 import { Button } from '@/components/ui/button';
-import { Users } from 'lucide-react';
+import { Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Index: React.FC = () => {
@@ -32,6 +32,24 @@ const Index: React.FC = () => {
   return (
     <PageTransition>
       <div className="space-y-6">
+        {/* Banner per accesso pazienti */}
+        <div className="bg-derma-100 rounded-lg p-4 shadow-sm border border-derma-200">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-derma-800">Portale Pazienti</h2>
+              <p className="text-sm text-derma-700">
+                I tuoi pazienti possono prenotare appuntamenti e visualizzare le loro informazioni
+              </p>
+            </div>
+            <Button asChild variant="default" className="bg-derma-600 hover:bg-derma-700">
+              <Link to="/landing" className="flex items-center gap-2">
+                Accedi come paziente
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+        
         <DashboardHeader />
         
         <div className="flex justify-between items-center">

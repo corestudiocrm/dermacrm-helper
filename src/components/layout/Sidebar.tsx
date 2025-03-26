@@ -1,10 +1,11 @@
 
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { User, Calendar, UserPlus, CalendarPlus, Home, ChevronLeft } from 'lucide-react';
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { User, Calendar, UserPlus, CalendarPlus, Home, ChevronLeft, Globe, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import SocialIntegrationDialog from '@/components/social/SocialIntegrationDialog';
 
 interface SidebarProps {
   open: boolean;
@@ -12,15 +13,27 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
+  const [socialDialogOpen, setSocialDialogOpen] = useState(false);
+  const navigate = useNavigate();
+  
   const mainNavItems = [
     { to: '/', label: 'Dashboard', icon: <Home className="h-5 w-5" /> },
     { to: '/clients', label: 'Clienti', icon: <User className="h-5 w-5" /> },
     { to: '/appointments', label: 'Appuntamenti', icon: <Calendar className="h-5 w-5" /> },
+    { to: '/whatsapp-reminders', label: 'Reminder WhatsApp', icon: <Bell className="h-5 w-5" /> },
   ];
 
   const quickActions = [
     { to: '/clients/new', label: 'Nuovo Cliente', icon: <UserPlus className="h-5 w-5" /> },
     { to: '/appointments/new', label: 'Nuovo Appuntamento', icon: <CalendarPlus className="h-5 w-5" /> },
+  ];
+  
+  const otherActions = [
+    { 
+      action: () => setSocialDialogOpen(true), 
+      label: 'Integra i tuoi social', 
+      icon: <Globe className="h-5 w-5" /> 
+    },
   ];
 
   // If sidebar is not open, don't render anything 
@@ -106,6 +119,27 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                   ))}
                 </nav>
               </div>
+              
+              <div className="space-y-1">
+                <h3 className="px-3 text-xs font-medium uppercase tracking-wider text-core-500">
+                  Funzionalità
+                </h3>
+                <nav className="space-y-1">
+                  {otherActions.map((item, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        item.action();
+                        setOpen(false);
+                      }}
+                      className="flex w-full items-center px-3 py-2 rounded-md text-sm transition-colors text-core-600 hover:bg-core-50"
+                    >
+                      <span className="mr-3">{item.icon}</span>
+                      {item.label}
+                    </button>
+                  ))}
+                </nav>
+              </div>
             </div>
           </ScrollArea>
           
@@ -118,6 +152,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
           </div>
         </div>
       </div>
+      
+      {/* Social Integration Dialog */}
+      <SocialIntegrationDialog 
+        open={socialDialogOpen} 
+        onOpenChange={setSocialDialogOpen} 
+      />
     </>
   );
 };

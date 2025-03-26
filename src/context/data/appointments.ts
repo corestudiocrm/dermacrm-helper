@@ -1,292 +1,114 @@
-import { Appointment } from '../types';
 
-// Sample appointments
-export const sampleAppointments: Appointment[] = [
-  {
-    id: 'a1',
-    clientId: '1',
-    date: new Date(2023, 9, 15, 10, 0),
-    treatment: 'Laser',
-    doctor: 'Dr. Rossi',
-    notes: 'Prima sessione di trattamento laser.'
-  },
-  {
-    id: 'a2',
-    clientId: '2',
-    date: new Date(2023, 9, 16, 14, 30),
-    treatment: 'Botox',
-    doctor: 'Dr. Bianchi',
-    notes: 'Rinnovo trattamento botox.'
-  },
-  {
-    id: 'a3',
-    clientId: '1',
-    date: new Date(2023, 9, 22, 11, 0),
-    treatment: 'Follow-up',
-    doctor: 'Dr. Rossi',
-    notes: 'Controllo post trattamento laser.'
-  },
-  {
-    id: 'a4',
-    clientId: '3',
-    date: new Date(2023, 9, 18, 9, 30),
-    treatment: 'Chemical Peel',
-    doctor: 'Dr. Verdi',
-    notes: 'Trattamento chemical peel per zona schiena.'
-  },
-  {
-    id: 'a5',
-    clientId: '4',
-    date: new Date(2023, 9, 20, 16, 0),
-    treatment: 'Microdermabrasion',
-    doctor: 'Dr. Ferrari',
-    notes: 'Follow-up dopo primo trattamento.'
-  },
-  {
-    id: 'a6',
-    clientId: '5',
-    date: new Date(2023, 9, 25, 10, 30),
-    treatment: 'Laser',
-    doctor: 'Dr. Rossi',
-    notes: 'Trattamento per macchie cutanee.'
-  },
-  {
-    id: 'a7',
-    clientId: '6',
-    date: new Date(2023, 9, 25, 15, 0),
-    treatment: 'Follow-up',
-    doctor: 'Dr. Bianchi',
-    notes: 'Controllo post trattamento laser.'
-  },
-  {
-    id: 'a8',
-    clientId: '7',
-    date: new Date(2023, 10, 2, 11, 30),
-    treatment: 'Chemical Peel',
-    doctor: 'Dr. Verdi',
-    notes: 'Seconda sessione per cicatrici acne.'
-  },
-  {
-    id: 'a9',
-    clientId: '8',
-    date: new Date(2023, 10, 3, 9, 0),
-    treatment: 'Consultation',
-    doctor: 'Dr. Ferrari',
-    notes: 'Valutazione del trattamento per rosacea.'
-  },
-  {
-    id: 'a10',
-    clientId: '9',
-    date: new Date(2023, 10, 5, 14, 0),
-    treatment: 'Filler',
-    doctor: 'Dr. Bianchi',
-    notes: 'Trattamento filler labbra.'
-  },
-  {
-    id: 'a11',
-    clientId: '10',
-    date: new Date(2023, 10, 8, 16, 30),
-    treatment: 'Microdermabrasion',
-    doctor: 'Dr. Rossi',
-    notes: 'Follow-up trattamento pelle grassa.'
-  },
-  {
-    id: 'a12',
-    clientId: '1',
-    date: new Date(2023, 10, 12, 10, 0),
-    treatment: 'Laser',
-    doctor: 'Dr. Rossi',
-    notes: 'Quarta sessione di trattamento laser.'
-  },
-  {
-    id: 'a13',
-    clientId: '4',
-    date: new Date(2023, 10, 15, 11, 30),
-    treatment: 'Mesotherapy',
-    doctor: 'Dr. Ferrari',
-    notes: 'Nuovo trattamento per idratazione profonda.'
-  },
-  {
-    id: 'a14',
-    clientId: '2',
-    date: new Date(2023, 10, 18, 15, 0),
-    treatment: 'Botox',
-    doctor: 'Dr. Bianchi',
-    notes: 'Mantenimento trattamento botox.'
-  },
-  {
-    id: 'a15',
-    clientId: '6',
-    date: new Date(2023, 10, 20, 9, 30),
-    treatment: 'Laser',
-    doctor: 'Dr. Verdi',
-    notes: 'Trattamento zona collo.'
-  },
-  {
-    id: 'a16',
-    clientId: '11',
-    date: new Date(2023, 11, 5, 10, 0),
-    treatment: 'Hydrafacial',
-    doctor: 'Dr. Ferrari',
-    notes: 'Primo trattamento Hydrafacial per pelle disidratata.'
-  },
-  {
-    id: 'a17',
-    clientId: '12',
-    date: new Date(2023, 11, 5, 14, 30),
-    treatment: 'Laser',
-    doctor: 'Dr. Rossi',
-    notes: 'Follow-up per trattamento dermatite braccia.'
-  },
-  {
-    id: 'a18',
-    clientId: '13',
-    date: new Date(2023, 11, 6, 9, 0),
-    treatment: 'Chemical Peel',
-    doctor: 'Dr. Verdi',
-    notes: 'Secondo trattamento chemical peel.'
+import { format, addDays, subDays, addHours, setHours, setMinutes, setMonth, setDate, setYear } from 'date-fns';
+import { Appointment, Doctor, Treatment } from '../types';
+
+// Funzione per generare appuntamenti
+const generateAppointments = (baseDate: Date, count: number, clientIds: string[]): Appointment[] => {
+  const appointments: Appointment[] = [];
+  const doctors = ["Dr. Rossi", "Dr. Bianchi", "Dr. Verdi", "Dr. Neri"] as Doctor[];
+  const treatments = ["Visita generale", "Controllo", "Consulenza", "Trattamento"] as Treatment[];
+  
+  // Distribuzione più realistica degli orari durante la giornata
+  const hours = [9, 10, 11, 14, 15, 16, 17];
+  
+  for (let i = 0; i < count; i++) {
+    const date = new Date(baseDate);
+    const dayOffset = Math.floor(i / 7); // massimo 7 appuntamenti al giorno
+    
+    // Aggiunge giorni alla data base, saltando i weekend
+    let currentDay = addDays(date, dayOffset);
+    const dayOfWeek = currentDay.getDay();
+    
+    // Se è weekend, spostati al lunedì successivo
+    if (dayOfWeek === 0) { // domenica
+      currentDay = addDays(currentDay, 1);
+    } else if (dayOfWeek === 6) { // sabato
+      currentDay = addDays(currentDay, 2);
+    }
+    
+    // Imposta ora in base al resto di i/7 (per distribuire gli appuntamenti durante il giorno)
+    const hourIndex = i % 7;
+    const hourOfDay = hours[hourIndex];
+    const minutes = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+    
+    currentDay = setHours(currentDay, hourOfDay);
+    currentDay = setMinutes(currentDay, minutes);
+    
+    const id = (Date.now() + i).toString();
+    const clientId = clientIds[Math.floor(Math.random() * clientIds.length)];
+    const doctor = doctors[Math.floor(Math.random() * doctors.length)];
+    const treatment = treatments[Math.floor(Math.random() * treatments.length)];
+    
+    appointments.push({
+      id,
+      clientId,
+      date: currentDay,
+      doctor,
+      treatment,
+      notes: `Appuntamento del ${format(currentDay, 'dd/MM/yyyy HH:mm')}`
+    });
   }
-];
+  
+  return appointments;
+};
 
-// Additional appointments
-export const additionalAppointments: Appointment[] = [
-  {
-    id: 'a19',
-    clientId: '14',
-    date: new Date(2023, 11, 6, 16, 0),
-    treatment: 'Follow-up',
-    doctor: 'Dr. Bianchi',
-    notes: 'Controllo post trattamento microdermoabrasione.'
-  },
-  {
-    id: 'a20',
-    clientId: '15',
-    date: new Date(2023, 11, 7, 11, 30),
-    treatment: 'Mesotherapy',
-    doctor: 'Dr. Ferrari',
-    notes: 'Trattamento depigmentante mesoterapia.'
-  },
-  {
-    id: 'a21',
-    clientId: '16',
-    date: new Date(2023, 11, 7, 15, 0),
-    treatment: 'Laser',
-    doctor: 'Dr. Rossi',
-    notes: 'Terza sessione laser cicatrici viso.'
-  },
-  {
-    id: 'a22',
-    clientId: '17',
-    date: new Date(2023, 11, 8, 10, 0),
-    treatment: 'Consultation',
-    doctor: 'Dr. Bianchi',
-    notes: 'Follow-up terapia rosacea.'
-  },
-  {
-    id: 'a23',
-    clientId: '18',
-    date: new Date(2023, 11, 8, 14, 0),
-    treatment: 'Chemical Peel',
-    doctor: 'Dr. Verdi',
-    notes: 'Secondo trattamento per iperpigmentazione.'
-  },
-  {
-    id: 'a24',
-    clientId: '19',
-    date: new Date(2023, 11, 9, 9, 30),
-    treatment: 'Hydrafacial',
-    doctor: 'Dr. Ferrari',
-    notes: 'Follow-up trattamento purificante.'
-  },
-  {
-    id: 'a25',
-    clientId: '20',
-    date: new Date(2023, 11, 9, 16, 30),
-    treatment: 'Laser',
-    doctor: 'Dr. Rossi',
-    notes: 'Controllo post trattamento psoriasi.'
-  },
-  {
-    id: 'a26',
-    clientId: '21',
-    date: new Date(2023, 11, 12, 11, 0),
-    treatment: 'Microneedling',
-    doctor: 'Dr. Bianchi',
-    notes: 'Seconda sessione microneedling cicatrici acne.'
-  },
-  {
-    id: 'a27',
-    clientId: '22',
-    date: new Date(2023, 11, 12, 15, 30),
-    treatment: 'Follow-up',
-    doctor: 'Dr. Verdi',
-    notes: 'Controllo post trattamento cheratosi.'
-  },
-  {
-    id: 'a28',
-    clientId: '23',
-    date: new Date(2023, 11, 13, 10, 30),
-    treatment: 'IPL',
-    doctor: 'Dr. Ferrari',
-    notes: 'Seconda sessione IPL macchie solari.'
-  },
-  {
-    id: 'a29',
-    clientId: '24',
-    date: new Date(2023, 11, 13, 16, 0),
-    treatment: 'Botox',
-    doctor: 'Dr. Rossi',
-    notes: 'Follow-up trattamento iperidrosi.'
-  },
-  {
-    id: 'a30',
-    clientId: '25',
-    date: new Date(2023, 11, 14, 9, 0),
-    treatment: 'Laser',
-    doctor: 'Dr. Bianchi',
-    notes: 'Seconda sessione laser vascolare.'
-  },
-  {
-    id: 'a31',
-    clientId: '11',
-    date: new Date(2023, 11, 14, 14, 0),
-    treatment: 'Follow-up',
-    doctor: 'Dr. Ferrari',
-    notes: 'Controllo post Hydrafacial.'
-  },
-  {
-    id: 'a32',
-    clientId: '13',
-    date: new Date(2023, 11, 15, 11, 30),
-    treatment: 'Consultation',
-    doctor: 'Dr. Verdi',
-    notes: 'Consulenza per nuovo trattamento.'
-  },
-  {
-    id: 'a33',
-    clientId: '15',
-    date: new Date(2023, 11, 15, 16, 30),
-    treatment: 'Mesotherapy',
-    doctor: 'Dr. Ferrari',
-    notes: 'Follow-up mesoterapia depigmentante.'
-  },
-  {
-    id: 'a34',
-    clientId: '17',
-    date: new Date(2023, 11, 16, 10, 0),
-    treatment: 'LED Therapy',
-    doctor: 'Dr. Bianchi',
-    notes: 'Trattamento LED per rosacea.'
-  },
-  {
-    id: 'a35',
-    clientId: '19',
-    date: new Date(2023, 11, 16, 15, 0),
-    treatment: 'Microdermabrasion',
-    doctor: 'Dr. Rossi',
-    notes: 'Trattamento per pori dilatati.'
-  }
-];
+// Generazione di date per marzo, aprile e maggio 2025
+const march2025 = new Date(2025, 2, 1); // Marzo 2025
+const april2025 = new Date(2025, 3, 1); // Aprile 2025
+const may2025 = new Date(2025, 4, 1); // Maggio 2025
 
-// Merge all appointments for export
-export const mergedAppointments = [...sampleAppointments, ...additionalAppointments];
+// Base di appuntamenti del 2024
+export const generateInitialAppointments = (clientIds: string[]): Appointment[] => {
+  const today = new Date();
+  const tomorrow = addDays(today, 1);
+  const nextWeek = addDays(today, 7);
+  
+  // Appuntamenti di base per il 2024
+  const baseAppointments = [
+    {
+      id: "1",
+      clientId: clientIds[0],
+      date: setHours(today, 14),
+      doctor: "Dr. Rossi" as Doctor,
+      treatment: "Visita generale" as Treatment,
+      notes: "Prima visita"
+    },
+    {
+      id: "2",
+      clientId: clientIds[1],
+      date: setHours(setMinutes(today, 30), 15),
+      doctor: "Dr. Bianchi" as Doctor,
+      treatment: "Controllo" as Treatment,
+      notes: "Controllo mensile"
+    },
+    {
+      id: "3",
+      clientId: clientIds[2],
+      date: setHours(tomorrow, 10),
+      doctor: "Dr. Verdi" as Doctor,
+      treatment: "Consulenza" as Treatment,
+      notes: "Consulenza per trattamento"
+    },
+    {
+      id: "4",
+      clientId: clientIds[3],
+      date: setHours(setMinutes(nextWeek, 0), 11),
+      doctor: "Dr. Neri" as Doctor,
+      treatment: "Trattamento" as Treatment,
+      notes: "Sessione di trattamento"
+    }
+  ];
+  
+  // Genera 20 appuntamenti per ciascun mese del 2025
+  const march2025Appointments = generateAppointments(march2025, 20, clientIds);
+  const april2025Appointments = generateAppointments(april2025, 20, clientIds);
+  const may2025Appointments = generateAppointments(may2025, 20, clientIds);
+  
+  // Unisci gli appuntamenti
+  return [
+    ...baseAppointments,
+    ...march2025Appointments,
+    ...april2025Appointments,
+    ...may2025Appointments
+  ];
+};

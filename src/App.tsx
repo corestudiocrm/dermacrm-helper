@@ -18,6 +18,8 @@ import NotFound from "./pages/NotFound";
 import LandingPage from "./pages/landing/LandingPage";
 import NewClientLanding from "./pages/landing/NewClientLanding";
 import ExistingClientLanding from "./pages/landing/ExistingClientLanding";
+import Login from "./pages/Login";
+import WhatsAppReminders from "./pages/WhatsAppReminders";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,9 @@ const App = () => {
           
           <BrowserRouter>
             <Routes>
+              {/* Login Page (no sidebar/navbar) */}
+              <Route path="/login" element={<Login />} />
+              
               {/* Landing Pages (no sidebar/navbar) */}
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/landing/new" element={<NewClientLanding />} />
@@ -60,6 +65,8 @@ const App = () => {
                             <Route path="/appointments/:id" element={<Appointments />} />
                             <Route path="/appointments/new" element={<Appointments />} />
                             <Route path="/appointments/edit/:id" element={<Appointments />} />
+                            <Route path="/clients-overview" element={<ClientsOverview />} />
+                            <Route path="/whatsapp-reminders" element={<WhatsAppReminders />} />
                             <Route path="*" element={<NotFound />} />
                           </Routes>
                         </AnimatePresence>
