@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-
+import Login from './pages/Login';
 import Index from './pages/Index';
 import Clients from './pages/Clients';
 import ClientDetail from './pages/ClientDetail';
 import Appointments from './pages/Appointments';
 import NotFound from './pages/NotFound';
 import ClientsOverview from './pages/ClientsOverview';
-import Login from './pages/Login';
+
 import WhatsAppReminders from './pages/WhatsAppReminders';
 
 const AppRoutes: React.FC = () => {
