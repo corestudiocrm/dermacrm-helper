@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
-      <LandingHeader title="Benvenuto allo Studio Francia" />
+      <LandingHeader title="Benvenuto a CoreStudio CRM" />
       
       <main className="flex-1 py-12 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
