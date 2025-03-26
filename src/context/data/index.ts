@@ -1,6 +1,6 @@
 
 import { mergedClients as sampleClients } from './clients';
-import { mergedAppointments as sampleAppointments } from './appointments';
+import { sampleAppointments } from './appointments';
 import { treatments, doctors, bodyAreas } from './options';
 
 export {

@@ -5,8 +5,8 @@ import { Appointment, Doctor, Treatment } from '../types';
 // Funzione per generare appuntamenti
 const generateAppointments = (baseDate: Date, count: number, clientIds: string[]): Appointment[] => {
   const appointments: Appointment[] = [];
-  const doctors = ["Dr. Rossi", "Dr. Bianchi", "Dr. Verdi", "Dr. Neri"] as Doctor[];
-  const treatments = ["Visita generale", "Controllo", "Consulenza", "Trattamento"] as Treatment[];
+  const doctors: Doctor[] = ["Dr. Rossi", "Dr. Bianchi", "Dr. Verdi", "Dr. Neri"];
+  const treatments: Treatment[] = ["Consultation", "Follow-up", "Laser", "Chemical Peel"];
   
   // Distribuzione più realistica degli orari durante la giornata
   const hours = [9, 10, 11, 14, 15, 16, 17];
@@ -70,7 +70,7 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
       clientId: clientIds[0],
       date: setHours(today, 14),
       doctor: "Dr. Rossi" as Doctor,
-      treatment: "Visita generale" as Treatment,
+      treatment: "Consultation" as Treatment,
       notes: "Prima visita"
     },
     {
@@ -78,7 +78,7 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
       clientId: clientIds[1],
       date: setHours(setMinutes(today, 30), 15),
       doctor: "Dr. Bianchi" as Doctor,
-      treatment: "Controllo" as Treatment,
+      treatment: "Follow-up" as Treatment,
       notes: "Controllo mensile"
     },
     {
@@ -86,7 +86,7 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
       clientId: clientIds[2],
       date: setHours(tomorrow, 10),
       doctor: "Dr. Verdi" as Doctor,
-      treatment: "Consulenza" as Treatment,
+      treatment: "Laser" as Treatment,
       notes: "Consulenza per trattamento"
     },
     {
@@ -94,7 +94,7 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
       clientId: clientIds[3],
       date: setHours(setMinutes(nextWeek, 0), 11),
       doctor: "Dr. Neri" as Doctor,
-      treatment: "Trattamento" as Treatment,
+      treatment: "Chemical Peel" as Treatment,
       notes: "Sessione di trattamento"
     }
   ];
@@ -112,3 +112,8 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
     ...may2025Appointments
   ];
 };
+
+// Export the sample appointments
+export const sampleAppointments = generateInitialAppointments([
+  "client1", "client2", "client3", "client4", "client5"
+]);

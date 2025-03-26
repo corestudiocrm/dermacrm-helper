@@ -20,6 +20,7 @@ import NewClientLanding from "./pages/landing/NewClientLanding";
 import ExistingClientLanding from "./pages/landing/ExistingClientLanding";
 import Login from "./pages/Login";
 import WhatsAppReminders from "./pages/WhatsAppReminders";
+import ClientsOverview from "./pages/ClientsOverview";
 
 const queryClient = new QueryClient();
 
