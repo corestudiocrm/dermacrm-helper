@@ -31,7 +31,7 @@ const LandingPage: React.FC = () => {
                 <div>
                   <h2 className="text-lg font-semibold text-primary-foreground">Area Operatori</h2>
                   <p className="text-sm text-muted-foreground">
-                    Accedi all'area riservata per gli operatori dello studio
+                    
                   </p>
                 </div>
                 <div className="flex items-center gap-2 text-primary hover:text-primary/80">
@@ -98,7 +98,7 @@ const LandingPage: React.FC = () => {
       </main>
 
       <footer className="py-4 px-6 text-center text-sm text-muted-foreground border-t">
-        <p>© {new Date().getFullYear()} Studio Francia. Tutti i diritti riservati.</p>
+        <p>© {new Date().getFullYear()} Core Studio. Tutti i diritti riservati.</p>
       </footer>
     </div>
   );
