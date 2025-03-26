@@ -34,12 +34,7 @@ const Index: React.FC = () => {
     <PageTransition>
       <div className="space-y-6">
         {/* Banner for patient access - styled like the one in landing page */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <Button 
             asChild 
             variant="outline" 
@@ -49,7 +44,7 @@ const Index: React.FC = () => {
               <div>
                 <h2 className="text-lg font-semibold text-primary">Portale Pazienti</h2>
                 <p className="text-sm text-muted-foreground">
-                  
+                  Invia i tuoi pazienti qui per prenotazioni online
                 </p>
               </div>
               <div className="flex items-center gap-2 text-primary hover:text-primary/80">
@@ -58,7 +53,7 @@ const Index: React.FC = () => {
               </div>
             </Link>
           </Button>
-        </motion.div>
+        </div>
         
         <DashboardHeader />
         
