@@ -5,7 +5,7 @@ import { Appointment, Doctor, Treatment } from '../types';
 // Funzione per generare appuntamenti
 const generateAppointments = (baseDate: Date, count: number, clientIds: string[]): Appointment[] => {
   const appointments: Appointment[] = [];
-  const doctors: Doctor[] = ["Dr. Rossi", "Dr. Bianchi", "Dr. Verdi", "Dr. Neri"];
+  const doctors: Doctor[] = ["Dr. Rossi", "Dr. Bianchi", "Dr. Verdi", "Dr. Ferrari"];
   const treatments: Treatment[] = ["Consultation", "Follow-up", "Laser", "Chemical Peel"];
   
   // Distribuzione più realistica degli orari durante la giornata
