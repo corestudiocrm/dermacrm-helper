@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { format, addDays, isPast, isSameDay } from 'date-fns';
 import { useCrm } from '@/context/CrmContext';
@@ -33,22 +32,24 @@ const Index: React.FC = () => {
     <PageTransition>
       <div className="space-y-6">
         {/* Banner per accesso pazienti */}
-        <div className="bg-derma-100 rounded-lg p-4 shadow-sm border border-derma-200">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <Button 
+          asChild 
+          variant="default" 
+          className="w-full bg-derma-100 hover:bg-derma-200 rounded-lg p-4 shadow-sm border border-derma-200"
+        >
+          <Link to="/landing" className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <h2 className="text-lg font-semibold text-derma-800">Portale Pazienti</h2>
               <p className="text-sm text-derma-700">
                 I tuoi pazienti possono prenotare appuntamenti e visualizzare le loro informazioni
               </p>
             </div>
-            <Button asChild variant="default" className="bg-derma-600 hover:bg-derma-700">
-              <Link to="/landing" className="flex items-center gap-2">
-                Accedi come paziente
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
+            <div className="flex items-center gap-2 text-derma-600 hover:text-derma-700">
+              Accedi come paziente
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+        </Button>
         
         <DashboardHeader />
         

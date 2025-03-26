@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -84,9 +83,7 @@ const Login: React.FC = () => {
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
-            <div className="text-xs text-muted-foreground text-center">
-              <p>Per demo, usa: username: <strong>admin</strong>, password: <strong>password</strong></p>
-            </div>
+            
           </CardFooter>
         </Card>
       </motion.div>
