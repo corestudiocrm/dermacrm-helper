@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { format, addDays, isPast, isSameDay } from 'date-fns';
 import { useCrm } from '@/context/CrmContext';
@@ -45,7 +46,7 @@ const Index: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-2 text-derma-600 hover:text-derma-700">
-              Accedi come paziente
+              Clicca qui per accedere all'esperienza paziente
               <ArrowRight className="h-4 w-4" />
             </div>
           </Link>

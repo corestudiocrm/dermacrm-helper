@@ -15,6 +15,33 @@ const LandingPage: React.FC = () => {
       
       <main className="flex-1 py-12 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
+          {/* Banner per accesso operatori */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-6"
+          >
+            <Button 
+              asChild 
+              variant="outline" 
+              className="w-full bg-primary/10 hover:bg-primary/20 rounded-lg p-4 shadow-sm border border-primary/20"
+            >
+              <Link to="/" className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-primary-foreground">Area Operatori</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Accedi all'area riservata per gli operatori dello studio
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-primary hover:text-primary/80">
+                  Clicca qui per accedere all'esperienza Operatore Studio
+                  <ArrowRight className="h-4 w-4" />
+                </div>
+              </Link>
+            </Button>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
