@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Appointment } from './types';
@@ -96,31 +95,16 @@ export const createAppointmentFunctions = (
       medicalNotes: appointmentData.notes || ""
     });
     
-    // Verify that client was created successfully
-    if (!clientId) {
-      toast.error('Errore durante la creazione del profilo paziente');
-      throw new Error('Failed to create client');
-    }
-    
-    // Create appointment with explicit client ID reference
+    // Create appointment
     const appointment: Omit<Appointment, 'id'> = {
       clientId,
       date: appointmentData.date,
       treatment: appointmentData.treatment as any,
       doctor: appointmentData.doctor as any,
-      notes: appointmentData.notes || ''
+      notes: appointmentData.notes
     };
     
-    // Add appointment and get the ID
     const appointmentId = addAppointment(appointment);
-    
-    if (!appointmentId) {
-      toast.error('Errore durante la creazione dell\'appuntamento');
-      throw new Error('Failed to create appointment');
-    }
-    
-    toast.success('Paziente e appuntamento creati con successo');
-    
     return { clientId, appointmentId };
   };
 

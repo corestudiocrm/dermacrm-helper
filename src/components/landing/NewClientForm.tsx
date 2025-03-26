@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useCrm } from '@/context/CrmContext';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { toast } from 'sonner';
 
 // Import schema and components
 import { formSchema, FormValues } from './newClientForm/formSchema';
@@ -61,14 +60,7 @@ const NewClientForm: React.FC<NewClientFormProps> = ({ selectedTimeSlot, onSubmi
         addClient
       );
       
-      if (result && result.clientId && result.appointmentId) {
-        console.log('Appuntamento creato con successo:', result);
-        toast.success('Appuntamento prenotato con successo!');
-        onSubmitSuccess(result.clientId, result.appointmentId);
-      } else {
-        console.error('Errore nella creazione dell\'appuntamento, dati mancanti:', result);
-        form.setError('root', { message: 'Errore durante la prenotazione' });
-      }
+      onSubmitSuccess(result.clientId, result.appointmentId);
     } catch (error) {
       console.error("Error booking appointment:", error);
       form.setError('root', { message: 'Si è verificato un errore durante la prenotazione' });
