@@ -10,6 +10,7 @@ import AppointmentsList from '@/components/dashboard/AppointmentsList';
 import { Button } from '@/components/ui/button';
 import { Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Index: React.FC = () => {
   const { clients, appointments, getClient } = useCrm();
@@ -32,25 +33,32 @@ const Index: React.FC = () => {
   return (
     <PageTransition>
       <div className="space-y-6">
-        {/* Banner per accesso pazienti */}
-        <Button 
-          asChild 
-          variant="default" 
-          className="w-full bg-derma-100 hover:bg-derma-200 rounded-lg p-4 shadow-sm border border-derma-200"
+        {/* Banner for patient access - styled like the one in landing page */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mb-6"
         >
-          <Link to="/landing" className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-semibold text-derma-800">Portale Pazienti</h2>
-              <p className="text-sm text-derma-700">
-                
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-derma-600 hover:text-derma-700">
-              Clicca qui per accedere all'esperienza paziente
-              <ArrowRight className="h-4 w-4" />
-            </div>
-          </Link>
-        </Button>
+          <Button 
+            asChild 
+            variant="outline" 
+            className="w-full bg-primary/10 hover:bg-primary/20 rounded-lg p-4 shadow-sm border border-primary/20"
+          >
+            <Link to="/landing" className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+              <div>
+                <h2 className="text-lg font-semibold text-primary">Portale Pazienti</h2>
+                <p className="text-sm text-muted-foreground">
+                  
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-primary hover:text-primary/80">
+                Clicca qui per accedere all'esperienza paziente
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            </Link>
+          </Button>
+        </motion.div>
         
         <DashboardHeader />
         
