@@ -14,15 +14,17 @@ import WhatsAppReminders from './pages/WhatsAppReminders';
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Index />} />
-      <Route path="/clients" element={<Clients />} />
-      <Route path="/clients/:id" element={<ClientDetail />} />
-      <Route path="/appointments" element={<Appointments />} />
-      <Route path="/clients-overview" element={<ClientsOverview />} />
-      <Route path="/whatsapp-reminders" element={<WhatsAppReminders />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+  <Route path="/" element={<Login />} /> {/* ora la root è il login */}
+  <Route path="/login" element={<Login />} />
+  <Route path="/index" element={<Index />} /> {/* se vuoi accedere a Index altrove */}
+  <Route path="/clients" element={<Clients />} />
+  <Route path="/clients/:id" element={<ClientDetail />} />
+  <Route path="/appointments" element={<Appointments />} />
+  <Route path="/clients-overview" element={<ClientsOverview />} />
+  <Route path="/whatsapp-reminders" element={<WhatsAppReminders />} />
+  <Route path="*" element={<NotFound />} />
+</Routes>
+
   );
 };
 
