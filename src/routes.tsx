@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -19,6 +18,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/clients" element={<Clients />} />
       <Route path="/clients/:id" element={<ClientDetail />} />
       <Route path="/appointments" element={<Appointments />} />
+      <Route path="/appointments/:id" element={<Appointments />} />
+      <Route path="/appointments/new" element={<Appointments />} />
+      <Route path="/appointments/edit/:id" element={<Appointments />} />
       <Route path="/clients-overview" element={<ClientsOverview />} />
       <Route path="/whatsapp-reminders" element={<WhatsAppReminders />} />
       <Route path="*" element={<NotFound />} />
