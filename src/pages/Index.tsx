@@ -33,24 +33,26 @@ const Index: React.FC = () => {
     <PageTransition>
       <div className="space-y-6">
         {/* Banner per accesso pazienti */}
-        <Button 
-          asChild 
-          variant="default" 
-          className="w-full bg-derma-100 hover:bg-derma-200 rounded-lg p-4 shadow-sm border border-derma-200"
-        >
-          <Link to="/landing" className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-semibold text-derma-800">Portale Pazienti</h2>
-              <p className="text-sm text-derma-700">
-                I tuoi pazienti possono prenotare appuntamenti e visualizzare le loro informazioni
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-derma-600 hover:text-derma-700">
-              Clicca qui per accedere all'esperienza paziente
-              <ArrowRight className="h-4 w-4" />
-            </div>
-          </Link>
-        </Button>
+        <div className="w-full mb-6">
+          <Button 
+            asChild 
+            variant="default" 
+            className="w-full bg-derma-100 hover:bg-derma-200 rounded-lg p-4 shadow-sm border border-derma-200"
+          >
+            <Link to="/landing" className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+              <div>
+                <h2 className="text-lg font-semibold text-derma-800">Portale Pazienti</h2>
+                <p className="text-sm text-derma-700">
+                  I tuoi pazienti possono prenotare appuntamenti e visualizzare le loro informazioni
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-derma-600 hover:text-derma-700">
+                Clicca qui per accedere all'esperienza paziente
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            </Link>
+          </Button>
+        </div>
         
         <DashboardHeader />
         
