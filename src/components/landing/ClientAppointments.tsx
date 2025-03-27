@@ -4,6 +4,7 @@ import { useCrm } from '@/context/CrmContext';
 import AppointmentsSection from './appointments/AppointmentsSection';
 import CancelAppointmentDialog from './appointments/CancelAppointmentDialog';
 import AppointmentNotesDialog from './appointments/AppointmentNotesDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ClientAppointmentsProps {
   clientId: string;
@@ -13,6 +14,7 @@ const ClientAppointments: React.FC<ClientAppointmentsProps> = ({ clientId }) => 
   const { getClient, getClientAppointments, updateAppointment, deleteAppointment } = useCrm();
   const client = getClient(clientId);
   const appointments = getClientAppointments(clientId);
+  const isMobile = useIsMobile();
   
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [appointmentToCancel, setAppointmentToCancel] = useState<string | null>(null);
@@ -66,11 +68,11 @@ const ClientAppointments: React.FC<ClientAppointmentsProps> = ({ clientId }) => 
   };
 
   // Group appointments by upcoming/past
-  const upcomingAppointments = appointments.filter(a => a.date > new Date());
-  const pastAppointments = appointments.filter(a => a.date <= new Date());
+  const upcomingAppointments = appointments.filter(a => new Date(a.date) > new Date());
+  const pastAppointments = appointments.filter(a => new Date(a.date) <= new Date());
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <h2 className="text-xl font-semibold">I tuoi appuntamenti</h2>
       
       {/* Upcoming appointments */}

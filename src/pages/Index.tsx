@@ -11,9 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index: React.FC = () => {
   const { clients, appointments, getClient } = useCrm();
+  const isMobile = useIsMobile();
   
   // Get today's and upcoming appointments
   const today = new Date();
@@ -33,36 +35,35 @@ const Index: React.FC = () => {
   return (
     <PageTransition>
       <div className="space-y-6">
-        {/* Banner for patient access - styled like the one in landing page */}
+        {/* Improved banner for patient access - better mobile experience */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
           className="mb-6"
         >
-          <Button 
-            asChild 
-            variant="outline" 
-            className="w-full bg-primary/10 hover:bg-primary/20 rounded-lg p-4 shadow-sm border border-primary/20"
+          <Link 
+            to="/landing" 
+            className="block w-full rounded-lg p-4 bg-primary/10 hover:bg-primary/20 border border-primary/20 shadow-sm transition-colors"
           >
-            <Link to="/landing" className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
-              <div>
+            <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} items-center justify-between gap-3`}>
+              <div className="text-center sm:text-left">
                 <h2 className="text-lg font-semibold text-primary">Portale Pazienti</h2>
-                <p className="text-sm text-muted-foreground">
-                  
+                <p className="text-sm text-muted-foreground mt-1">
+                  Accesso riservato per i tuoi pazienti
                 </p>
               </div>
-              <div className="flex items-center gap-2 text-primary hover:text-primary/80">
-                Clicca qui per accedere all'esperienza paziente
+              <div className="flex items-center mt-2 sm:mt-0 gap-2 text-primary hover:text-primary/80">
+                <span>Accedi all'esperienza paziente</span>
                 <ArrowRight className="h-4 w-4" />
               </div>
-            </Link>
-          </Button>
+            </div>
+          </Link>
         </motion.div>
         
         <DashboardHeader />
         
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
           <h2 className="text-xl font-semibold">Statistiche</h2>
           <Button variant="outline" asChild>
             <Link to="/clients-overview">

@@ -65,7 +65,7 @@ export const useAppointmentsFiltering = () => {
 
   // Filter appointments based on search query, selected date, doctor, and status
   const filteredAppointments = appointments.filter(appointment => {
-    // Filter by date if in day view
+    // Filter by date ONLY if in day view mode
     if (viewMode === 'day' && !isSameDay(new Date(appointment.date), currentDate)) {
       return false;
     }
@@ -103,6 +103,7 @@ export const useAppointmentsFiltering = () => {
              appointment.doctor.toLowerCase().includes(query);
     }
     
+    // If we're here, the appointment passed all filters
     return true;
   });
 

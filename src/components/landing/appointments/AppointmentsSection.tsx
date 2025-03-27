@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import AppointmentCard from './AppointmentCard';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AppointmentsSectionProps {
   title: string;
@@ -26,6 +27,8 @@ const AppointmentsSection: React.FC<AppointmentsSectionProps> = ({
   onCancelClick,
   onNotesClick,
 }) => {
+  const isMobile = useIsMobile();
+
   return (
     <div>
       <h3 className="text-lg font-medium mb-4">{title}</h3>
@@ -42,7 +45,7 @@ const AppointmentsSection: React.FC<AppointmentsSectionProps> = ({
           ))}
         </div>
       ) : (
-        <div className="bg-muted/30 rounded-lg p-6 text-center">
+        <div className={`bg-muted/30 rounded-lg p-6 text-center ${isMobile ? 'mx-1' : ''}`}>
           <p className="text-muted-foreground">{emptyMessage}</p>
           {!isPast && (
             <Button className="mt-4" variant="outline" asChild>
