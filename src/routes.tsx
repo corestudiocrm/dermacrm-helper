@@ -10,10 +10,14 @@ import NotFound from './pages/NotFound';
 import ClientsOverview from './pages/ClientsOverview';
 import WhatsAppReminders from './pages/WhatsAppReminders';
 
+/**
+ * This file is maintained for reference but is no longer used
+ * as the main routing configuration. See App.tsx for the current
+ * routing setup.
+ */
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      {/* Default redirect to login */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/index" element={<Index />} />
