@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -19,10 +20,10 @@ const Login: React.FC = () => {
     
     // Simulate API call
     setTimeout(() => {
-      // Hardcoded credentials for demo
-      if (username === 'admin' && password === 'password') {
+      // Updated credentials
+      if (username === 'admin' && password === 'corestudio') {
         toast.success('Login effettuato con successo');
-        navigate('/');
+        navigate('/index');
       } else {
         toast.error('Credenziali non valide');
       }

@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { 
@@ -9,7 +10,8 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { UsersIcon, MessageCircle, Trash2, Edit, ArrowLeftCircle } from 'lucide-react';
+import { MessageCircle, Trash2, Edit, ArrowLeftCircle } from 'lucide-react';
+import UsersIcon from '@/components/icons/UsersIcon';
 import {
   AlertDialog,
   AlertDialogAction,

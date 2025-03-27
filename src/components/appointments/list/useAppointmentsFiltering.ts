@@ -23,7 +23,7 @@ export const useAppointmentsFiltering = () => {
   const { appointments, getClient, doctors } = useCrm();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentDate, setCurrentDate] = useState(startOfDay(new Date()));
-  const [viewMode, setViewMode] = useState<'day' | 'all'>('day');
+  const [viewMode, setViewMode] = useState<'day' | 'all'>('all'); // Default to 'all' view
   const [calendarViewMode, setCalendarViewMode] = useState<CalendarViewMode>('month');
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<AppointmentStatus>('all');
