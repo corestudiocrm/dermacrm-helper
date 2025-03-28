@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { User, Calendar, UserPlus, CalendarPlus, Home, ChevronLeft, Globe, Bell } from 'lucide-react';
@@ -17,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   const navigate = useNavigate();
   
   const mainNavItems = [
-    { to: '/', label: 'Dashboard', icon: <Home className="h-5 w-5" /> },
+    { to: '/dashboard', label: 'Dashboard', icon: <Home className="h-5 w-5" /> },
     { to: '/clients', label: 'Clienti', icon: <User className="h-5 w-5" /> },
     { to: '/appointments', label: 'Appuntamenti', icon: <Calendar className="h-5 w-5" /> },
     { to: '/whatsapp-reminders', label: 'Reminder WhatsApp', icon: <Bell className="h-5 w-5" /> },
@@ -80,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                     <NavLink
                       key={index}
                       to={item.to}
-                      end={item.to === '/'}
+                      end={item.to === '/dashboard'}
                       className={({ isActive }) => cn(
                         "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
                         isActive 
