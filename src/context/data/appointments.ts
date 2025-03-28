@@ -63,11 +63,16 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
   const tomorrow = addDays(today, 1);
   const nextWeek = addDays(today, 7);
   
+  // Make sure we have a valid client ID for every appointment
+  const ensureClientId = (index: number) => {
+    return clientIds[index % clientIds.length];
+  };
+  
   // Appuntamenti di base per il 2024
   const baseAppointments = [
     {
       id: "1",
-      clientId: clientIds[0],
+      clientId: ensureClientId(0),
       date: setHours(today, 14),
       doctor: "Dr. Rossi" as Doctor,
       treatment: "Consultation" as Treatment,
@@ -75,7 +80,7 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
     },
     {
       id: "2",
-      clientId: clientIds[1],
+      clientId: ensureClientId(1),
       date: setHours(setMinutes(today, 30), 15),
       doctor: "Dr. Bianchi" as Doctor,
       treatment: "Follow-up" as Treatment,
@@ -83,7 +88,7 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
     },
     {
       id: "3",
-      clientId: clientIds[2],
+      clientId: ensureClientId(2),
       date: setHours(tomorrow, 10),
       doctor: "Dr. Verdi" as Doctor,
       treatment: "Laser" as Treatment,
@@ -91,7 +96,7 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
     },
     {
       id: "4",
-      clientId: clientIds[3],
+      clientId: ensureClientId(3),
       date: setHours(setMinutes(nextWeek, 0), 11),
       doctor: "Dr. Neri" as Doctor,
       treatment: "Chemical Peel" as Treatment,
@@ -113,7 +118,13 @@ export const generateInitialAppointments = (clientIds: string[]): Appointment[] 
   ];
 };
 
-// Export the sample appointments
-export const sampleAppointments = generateInitialAppointments([
-  "client1", "client2", "client3", "client4", "client5"
-]);
+// Create a list of client IDs to ensure all appointments have a patient
+const clientIdsList = [
+  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+  "11", "12", "13", "14", "15", "101", "102", "103", "104", "105",
+  "106", "107", "108", "109", "110", "201", "202", "203", "204", "205",
+  "206", "207", "208", "209", "210"
+];
+
+// Export the sample appointments with patients assigned
+export const sampleAppointments = generateInitialAppointments(clientIdsList);

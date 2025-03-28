@@ -3,6 +3,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import AppointmentCard from './AppointmentCard';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 
 interface AppointmentsSectionProps {
   title: string;
@@ -28,6 +30,11 @@ const AppointmentsSection: React.FC<AppointmentsSectionProps> = ({
   onNotesClick,
 }) => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const handleBookAppointment = () => {
+    navigate('/landing/new');
+  };
 
   return (
     <div>
@@ -48,8 +55,9 @@ const AppointmentsSection: React.FC<AppointmentsSectionProps> = ({
         <div className={`bg-muted/30 rounded-lg p-6 text-center ${isMobile ? 'mx-1' : ''}`}>
           <p className="text-muted-foreground">{emptyMessage}</p>
           {!isPast && (
-            <Button className="mt-4" variant="outline" asChild>
-              <a href="/landing/new">Prenota un appuntamento</a>
+            <Button className="mt-4" variant="outline" onClick={handleBookAppointment}>
+              <Plus className="h-4 w-4 mr-1" />
+              Prenota un appuntamento
             </Button>
           )}
         </div>

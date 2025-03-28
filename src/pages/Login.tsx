@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { User, KeyRound } from 'lucide-react';
@@ -7,12 +7,34 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
   const navigate = useNavigate();
+
+  // Check if already logged in
+  useEffect(() => {
+    const loginTime = localStorage.getItem('loginTime');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    
+    if (isLoggedIn === 'true' && loginTime) {
+      const now = new Date().getTime();
+      const loginTimeValue = parseInt(loginTime, 10);
+      const tenMinutesInMs = 10 * 60 * 1000;
+      
+      if (now - loginTimeValue < tenMinutesInMs) {
+        navigate('/index');
+      } else {
+        // Session expired
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('loginTime');
+      }
+    }
+  }, [navigate]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,13 +44,22 @@ const Login: React.FC = () => {
     setTimeout(() => {
       // Updated credentials
       if (username === 'admin' && password === 'corestudio') {
+        // Set login state in localStorage with expiration time
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('loginTime', new Date().getTime().toString());
+        
         toast.success('Login effettuato con successo');
-        navigate('/index');
+        setShowWelcomeDialog(true);
       } else {
         toast.error('Credenziali non valide');
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }, 1000);
+  };
+
+  const handleCloseWelcomeDialog = () => {
+    setShowWelcomeDialog(false);
+    navigate('/index');
   };
 
   return (
@@ -88,6 +119,23 @@ const Login: React.FC = () => {
           </CardFooter>
         </Card>
       </motion.div>
+
+      {/* Welcome dialog */}
+      <Dialog open={showWelcomeDialog} onOpenChange={setShowWelcomeDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Ciao Doc!</DialogTitle>
+            <DialogDescription>
+              Questo ambiente è un ambiente di demo creato ad hoc per permetterti di testare le nostre funzionalità Basic.
+              Per personalizzarlo e approfondire le funzionalità di CoreStudio compila il form sul nostro sito ufficiale
+              <a href="https://corestudiocrm.it" target="_blank" rel="noopener noreferrer" className="text-primary ml-1">corestudiocrm.it</a>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end">
+            <Button onClick={handleCloseWelcomeDialog}>Capito</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
