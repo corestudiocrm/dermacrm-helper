@@ -33,6 +33,7 @@ const AppointmentsSection: React.FC<AppointmentsSectionProps> = ({
   const navigate = useNavigate();
 
   const handleBookAppointment = () => {
+    // Use the correct route for booking a new appointment
     navigate('/landing/new');
   };
 

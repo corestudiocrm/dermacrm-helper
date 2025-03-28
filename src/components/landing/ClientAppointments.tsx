@@ -62,7 +62,7 @@ const ClientAppointments: React.FC<ClientAppointmentsProps> = ({ clientId }) => 
 
   // Open notes dialog
   const openNotesDialog = (appointmentId: string) => {
-    const appointment = appointments.find(a => a.id === appointmentToAddNotes);
+    const appointment = appointments.find(a => a.id === appointmentId);
     
     if (appointment) {
       setAppointmentToAddNotes(appointmentId);
@@ -71,9 +71,9 @@ const ClientAppointments: React.FC<ClientAppointmentsProps> = ({ clientId }) => 
     }
   };
 
-  // Navigate to new appointment page
+  // Navigate to new appointment page with correct path
   const handleNewAppointment = () => {
-    navigate('/landing/new', { state: { clientId } });
+    navigate('/landing/new');
   };
 
   // Group appointments by upcoming/past
