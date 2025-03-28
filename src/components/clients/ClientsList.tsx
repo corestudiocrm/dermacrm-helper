@@ -46,11 +46,6 @@ const ClientsList: React.FC = () => {
     show: { opacity: 1, y: 0 }
   };
 
-  // Make sure the "New Client" button navigates correctly
-  const handleNewClient = () => {
-    navigate('/clients/new');
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
@@ -63,7 +58,7 @@ const ClientsList: React.FC = () => {
             className="pl-10 w-full"
           />
         </div>
-        <Button onClick={handleNewClient} className="shrink-0">
+        <Button onClick={() => navigate('/clients/new')} className="shrink-0">
           <UserPlus className="h-4 w-4 mr-2" />
           Nuovo Cliente
         </Button>
