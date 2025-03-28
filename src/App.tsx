@@ -39,8 +39,6 @@ const App = () => {
             <Routes>
               {/* Login Route */}
               <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/index" element={<Navigate to="/dashboard" replace />} />
               
               {/* Landing Pages */}
               <Route path="/landing" element={<LandingPage />} />
@@ -57,7 +55,7 @@ const App = () => {
                       <div className="container px-4 py-6 md:px-6 md:py-8">
                         <AnimatePresence mode="wait">
                           <Routes>
-                            <Route index element={<Navigate to="/dashboard" replace />} />
+                            <Route path="/" element={<Index />} />
                             <Route path="/dashboard" element={<Index />} />
                             <Route path="/clients" element={<Clients />} />
                             <Route path="/clients/new" element={<Clients />} />
@@ -66,6 +64,7 @@ const App = () => {
                             <Route path="/appointments" element={<Appointments />} />
                             <Route path="/clients-overview" element={<ClientsOverview />} />
                             <Route path="/whatsapp-reminders" element={<WhatsAppReminders />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
                           </Routes>
                         </AnimatePresence>
                       </div>
@@ -74,7 +73,8 @@ const App = () => {
                 </div>
               } />
               
-              <Route path="*" element={<NotFound />} />
+              {/* Direct user to main layout for any other path */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>

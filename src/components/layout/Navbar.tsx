@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const navItems = [
-    { to: '/dashboard', label: 'Home', icon: <Home className="h-4 w-4 mr-2" /> },
+    { to: '/', label: 'Home', icon: <Home className="h-4 w-4 mr-2" /> },
     { to: '/clients', label: 'Clienti', icon: <User className="h-4 w-4 mr-2" /> },
     { to: '/appointments', label: 'Appuntamenti', icon: <Calendar className="h-4 w-4 mr-2" /> },
   ];
@@ -38,7 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarOpen, setSidebarOpen }) => {
               <Menu className="h-5 w-5" />
             </Button>
             
-            <NavLink to="/dashboard" className="flex items-center">
+            <NavLink to="/" className="flex items-center">
               <span className="text-lg font-semibold bg-gradient-to-r from-core-800 to-core-600 bg-clip-text text-transparent">CoreStudio CRM</span>
             </NavLink>
           </div>
