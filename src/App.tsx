@@ -39,7 +39,7 @@ const App = () => {
             <Routes>
               {/* Login Route */}
               <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               
               {/* Landing Pages */}
               <Route path="/landing" element={<LandingPage />} />
@@ -56,7 +56,7 @@ const App = () => {
                       <div className="container px-4 py-6 md:px-6 md:py-8">
                         <AnimatePresence mode="wait">
                           <Routes>
-                            <Route path="/index" element={<Index />} />
+                            <Route path="/dashboard" element={<Index />} />
                             <Route path="/clients" element={<Clients />} />
                             <Route path="/clients/new" element={<Clients />} />
                             <Route path="/clients/:id" element={<ClientDetail />} />
