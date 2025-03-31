@@ -1,16 +1,36 @@
 
-import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useLocation, Link, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const NotFound = () => {
   const location = useLocation();
-
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
   useEffect(() => {
     console.error(
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
+    
+    // Check authentication status
+    const loginTime = localStorage.getItem('loginTime');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    
+    if (isLoggedIn === 'true' && loginTime) {
+      const now = new Date().getTime();
+      const loginTimeValue = parseInt(loginTime, 10);
+      const fifteenMinutesInMs = 15 * 60 * 1000;
+      
+      if (now - loginTimeValue < fifteenMinutesInMs) {
+        setIsAuthenticated(true);
+      }
+    }
   }, [location.pathname]);
+
+  // If not authenticated, redirect to login
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

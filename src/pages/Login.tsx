@@ -24,9 +24,9 @@ const Login: React.FC = () => {
     if (isLoggedIn === 'true' && loginTime) {
       const now = new Date().getTime();
       const loginTimeValue = parseInt(loginTime, 10);
-      const tenMinutesInMs = 10 * 60 * 1000;
+      const fifteenMinutesInMs = 15 * 60 * 1000; // Changed from 10 to 15 minutes
       
-      if (now - loginTimeValue < tenMinutesInMs) {
+      if (now - loginTimeValue < fifteenMinutesInMs) {
         navigate('/index');
       } else {
         // Session expired

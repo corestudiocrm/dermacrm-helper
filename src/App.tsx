@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,6 +27,29 @@ const queryClient = new QueryClient();
 const App = () => {
   // Setting sidebar closed by default
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const loginTime = localStorage.getItem('loginTime');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    
+    if (isLoggedIn === 'true' && loginTime) {
+      const now = new Date().getTime();
+      const loginTimeValue = parseInt(loginTime, 10);
+      const fifteenMinutesInMs = 15 * 60 * 1000; // Changed to 15 minutes
+      
+      if (now - loginTimeValue < fifteenMinutesInMs) {
+        setIsAuthenticated(true);
+      } else {
+        // Session expired
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('loginTime');
+        setIsAuthenticated(false);
+      }
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
 
   const MainLayout = ({ children }) => (
     <div className="min-h-screen bg-background flex">
@@ -54,70 +77,90 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               {/* Login Route */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Navigate to="/index" replace />} />
+              <Route path="/login" element={isAuthenticated ? <Navigate to="/index" replace /> : <Login />} />
+              <Route path="/" element={isAuthenticated ? <Navigate to="/index" replace /> : <Navigate to="/login" replace />} />
               
-              {/* Main Application Routes */}
+              {/* Main Application Routes - Protected */}
               <Route path="/index" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <Index />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               <Route path="/clients" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <Clients />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               {/* Client Routes */}
               <Route path="/clients/new" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <Clients />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               <Route path="/clients/:id" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <ClientDetail />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               <Route path="/clients/:id/edit" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <Clients />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               {/* Appointment Routes */}
               <Route path="/appointments" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <Appointments />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               <Route path="/appointments/new" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <Appointments />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
 
               <Route path="/appointments/:id" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <Appointments />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               <Route path="/clients-overview" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <ClientsOverview />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               <Route path="/whatsapp-reminders" element={
+                isAuthenticated ? 
                 <MainLayout>
                   <WhatsAppReminders />
-                </MainLayout>
+                </MainLayout> : 
+                <Navigate to="/login" replace />
               } />
               
               {/* Landing Pages */}
