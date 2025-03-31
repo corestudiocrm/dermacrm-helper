@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import { CrmProvider } from "./context/CrmContext";
@@ -28,43 +28,64 @@ const App = () => {
   // Setting sidebar closed by default
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
-  // Use regular state instead of constantly checking localStorage
-  // This prevents excessive re-renders
+  // Use state for authentication status
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    // Function to check authentication
-    const checkAuth = () => {
-      const loginTime = localStorage.getItem('loginTime');
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
+  // Function to check if the user is authenticated
+  const checkAuthentication = () => {
+    const loginTime = localStorage.getItem('loginTime');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    
+    if (isLoggedIn === 'true' && loginTime) {
+      const now = new Date().getTime();
+      const loginTimeValue = parseInt(loginTime, 10);
+      const fifteenMinutesInMs = 15 * 60 * 1000;
       
-      if (isLoggedIn === 'true' && loginTime) {
-        const now = new Date().getTime();
-        const loginTimeValue = parseInt(loginTime, 10);
-        const fifteenMinutesInMs = 15 * 60 * 1000;
-        
-        if (now - loginTimeValue < fifteenMinutesInMs) {
-          setIsAuthenticated(true);
-        } else {
-          // Session expired
-          localStorage.removeItem('isLoggedIn');
-          localStorage.removeItem('loginTime');
-          setIsAuthenticated(false);
-        }
+      // Check if the login time is within the past 15 minutes
+      if (now - loginTimeValue < fifteenMinutesInMs) {
+        setIsAuthenticated(true);
+        return true;
       } else {
+        // Session expired
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('loginTime');
         setIsAuthenticated(false);
+        return false;
+      }
+    }
+    
+    setIsAuthenticated(false);
+    return false;
+  };
+
+  // Check authentication on component mount and set up interval
+  useEffect(() => {
+    // Check authentication status immediately on load
+    checkAuthentication();
+    
+    // Set up an activity listener to refresh the session timer
+    const updateLoginTime = () => {
+      if (isAuthenticated) {
+        localStorage.setItem('loginTime', new Date().getTime().toString());
       }
     };
-
-    // Check auth on mount
-    checkAuth();
-
-    // Set up interval to periodically check auth status
-    // This is more efficient than checking on every render
-    const authInterval = setInterval(checkAuth, 60000); // Check every minute
-
-    return () => clearInterval(authInterval);
-  }, []);
+    
+    // Add event listeners for user activity
+    window.addEventListener('mousemove', updateLoginTime);
+    window.addEventListener('keydown', updateLoginTime);
+    window.addEventListener('click', updateLoginTime);
+    
+    // Set up interval to check authentication status periodically
+    const authInterval = setInterval(checkAuthentication, 60000); // Check every minute
+    
+    return () => {
+      // Clean up event listeners and interval
+      window.removeEventListener('mousemove', updateLoginTime);
+      window.removeEventListener('keydown', updateLoginTime);
+      window.removeEventListener('click', updateLoginTime);
+      clearInterval(authInterval);
+    };
+  }, [isAuthenticated]);
 
   const MainLayout = ({ children }) => (
     <div className="min-h-screen bg-background flex">
@@ -106,6 +127,7 @@ const App = () => {
                 <Navigate to="/login" />
               } />
               
+              {/* Protected Routes */}
               <Route path="/clients" element={
                 isAuthenticated ? 
                 <MainLayout>
@@ -114,7 +136,6 @@ const App = () => {
                 <Navigate to="/login" />
               } />
               
-              {/* Client Routes */}
               <Route path="/clients/new" element={
                 isAuthenticated ? 
                 <MainLayout>
@@ -139,7 +160,6 @@ const App = () => {
                 <Navigate to="/login" />
               } />
               
-              {/* Appointment Routes */}
               <Route path="/appointments" element={
                 isAuthenticated ? 
                 <MainLayout>

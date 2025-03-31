@@ -44,7 +44,7 @@ const Login: React.FC<LoginProps> = ({ setAuth }) => {
     
     // Only check auth once on mount
     checkAuth();
-  }, []); // Empty dependency array to run only once on mount
+  }, [navigate, setAuth]); // Add navigate and setAuth to dependency array
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
