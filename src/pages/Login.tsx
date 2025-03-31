@@ -9,32 +9,42 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
-const Login: React.FC = () => {
+interface LoginProps {
+  setAuth?: (value: boolean) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ setAuth }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcomeDialog, setShowWelcomeDialog] = useState(false);
   const navigate = useNavigate();
 
-  // Check if already logged in
+  // Check if already logged in - only on component mount
   useEffect(() => {
-    const loginTime = localStorage.getItem('loginTime');
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
-    if (isLoggedIn === 'true' && loginTime) {
-      const now = new Date().getTime();
-      const loginTimeValue = parseInt(loginTime, 10);
-      const fifteenMinutesInMs = 15 * 60 * 1000; // Changed from 10 to 15 minutes
+    const checkAuth = () => {
+      const loginTime = localStorage.getItem('loginTime');
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
       
-      if (now - loginTimeValue < fifteenMinutesInMs) {
-        navigate('/index');
-      } else {
-        // Session expired
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('loginTime');
+      if (isLoggedIn === 'true' && loginTime) {
+        const now = new Date().getTime();
+        const loginTimeValue = parseInt(loginTime, 10);
+        const fifteenMinutesInMs = 15 * 60 * 1000;
+        
+        if (now - loginTimeValue < fifteenMinutesInMs) {
+          if (setAuth) {
+            setAuth(true);
+          }
+          navigate('/index');
+          return true;
+        }
       }
-    }
-  }, [navigate]);
+      return false;
+    };
+    
+    // Only check auth once on mount
+    checkAuth();
+  }, []); // Empty dependency array to run only once on mount
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +57,11 @@ const Login: React.FC = () => {
         // Set login state in localStorage with expiration time
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('loginTime', new Date().getTime().toString());
+        
+        // Update authentication state in parent component
+        if (setAuth) {
+          setAuth(true);
+        }
         
         toast.success('Login effettuato con successo');
         setShowWelcomeDialog(true);

@@ -27,28 +27,43 @@ const queryClient = new QueryClient();
 const App = () => {
   // Setting sidebar closed by default
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Use regular state instead of constantly checking localStorage
+  // This prevents excessive re-renders
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const loginTime = localStorage.getItem('loginTime');
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
-    if (isLoggedIn === 'true' && loginTime) {
-      const now = new Date().getTime();
-      const loginTimeValue = parseInt(loginTime, 10);
-      const fifteenMinutesInMs = 15 * 60 * 1000; // Changed to 15 minutes
+    // Function to check authentication
+    const checkAuth = () => {
+      const loginTime = localStorage.getItem('loginTime');
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
       
-      if (now - loginTimeValue < fifteenMinutesInMs) {
-        setIsAuthenticated(true);
+      if (isLoggedIn === 'true' && loginTime) {
+        const now = new Date().getTime();
+        const loginTimeValue = parseInt(loginTime, 10);
+        const fifteenMinutesInMs = 15 * 60 * 1000;
+        
+        if (now - loginTimeValue < fifteenMinutesInMs) {
+          setIsAuthenticated(true);
+        } else {
+          // Session expired
+          localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('loginTime');
+          setIsAuthenticated(false);
+        }
       } else {
-        // Session expired
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('loginTime');
         setIsAuthenticated(false);
       }
-    } else {
-      setIsAuthenticated(false);
-    }
+    };
+
+    // Check auth on mount
+    checkAuth();
+
+    // Set up interval to periodically check auth status
+    // This is more efficient than checking on every render
+    const authInterval = setInterval(checkAuth, 60000); // Check every minute
+
+    return () => clearInterval(authInterval);
   }, []);
 
   const MainLayout = ({ children }) => (
@@ -77,8 +92,10 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               {/* Login Route */}
-              <Route path="/login" element={isAuthenticated ? <Navigate to="/index" replace /> : <Login />} />
-              <Route path="/" element={isAuthenticated ? <Navigate to="/index" replace /> : <Navigate to="/login" replace />} />
+              <Route path="/login" element={isAuthenticated ? <Navigate to="/index" /> : <Login setAuth={setIsAuthenticated} />} />
+              
+              {/* Default Route - Redirect based on auth status */}
+              <Route path="/" element={<Navigate to={isAuthenticated ? "/index" : "/login"} />} />
               
               {/* Main Application Routes - Protected */}
               <Route path="/index" element={
@@ -86,7 +103,7 @@ const App = () => {
                 <MainLayout>
                   <Index />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               <Route path="/clients" element={
@@ -94,7 +111,7 @@ const App = () => {
                 <MainLayout>
                   <Clients />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               {/* Client Routes */}
@@ -103,7 +120,7 @@ const App = () => {
                 <MainLayout>
                   <Clients />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               <Route path="/clients/:id" element={
@@ -111,7 +128,7 @@ const App = () => {
                 <MainLayout>
                   <ClientDetail />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               <Route path="/clients/:id/edit" element={
@@ -119,7 +136,7 @@ const App = () => {
                 <MainLayout>
                   <Clients />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               {/* Appointment Routes */}
@@ -128,7 +145,7 @@ const App = () => {
                 <MainLayout>
                   <Appointments />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               <Route path="/appointments/new" element={
@@ -136,7 +153,7 @@ const App = () => {
                 <MainLayout>
                   <Appointments />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
 
               <Route path="/appointments/:id" element={
@@ -144,7 +161,7 @@ const App = () => {
                 <MainLayout>
                   <Appointments />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               <Route path="/clients-overview" element={
@@ -152,7 +169,7 @@ const App = () => {
                 <MainLayout>
                   <ClientsOverview />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
               <Route path="/whatsapp-reminders" element={
@@ -160,10 +177,10 @@ const App = () => {
                 <MainLayout>
                   <WhatsAppReminders />
                 </MainLayout> : 
-                <Navigate to="/login" replace />
+                <Navigate to="/login" />
               } />
               
-              {/* Landing Pages */}
+              {/* Landing Pages - Publicly accessible */}
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/landing/new" element={<NewClientLanding />} />
               <Route path="/landing/login" element={<ExistingClientLanding />} />
