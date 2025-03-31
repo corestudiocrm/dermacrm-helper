@@ -18,12 +18,31 @@ import Appointments from "./pages/Appointments";
 import NotFound from "./pages/NotFound";
 import ClientsOverview from "./pages/ClientsOverview";
 import WhatsAppReminders from "./pages/WhatsAppReminders";
+import LandingPage from "./pages/landing/LandingPage";
+import NewClientLanding from "./pages/landing/NewClientLanding";
+import ExistingClientLanding from "./pages/landing/ExistingClientLanding";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   // Setting sidebar closed by default
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const MainLayout = ({ children }) => (
+    <div className="min-h-screen bg-background flex">
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+      <div className="flex-1 relative flex flex-col">
+        <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <main className="flex-1 overflow-auto pt-16">
+          <div className="container px-4 py-6 md:px-6 md:py-8">
+            <AnimatePresence mode="wait">
+              {children}
+            </AnimatePresence>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -36,107 +55,77 @@ const App = () => {
             <Routes>
               {/* Login Route */}
               <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/" element={<Navigate to="/index" replace />} />
               
               {/* Main Application Routes */}
               <Route path="/index" element={
-                <div className="min-h-screen bg-background flex">
-                  <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-                  
-                  <div className="flex-1 relative flex flex-col">
-                    <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-                    
-                    <main className="flex-1 overflow-auto pt-16">
-                      <div className="container px-4 py-6 md:px-6 md:py-8">
-                        <AnimatePresence mode="wait">
-                          <Index />
-                        </AnimatePresence>
-                      </div>
-                    </main>
-                  </div>
-                </div>
+                <MainLayout>
+                  <Index />
+                </MainLayout>
               } />
               
               <Route path="/clients" element={
-                <div className="min-h-screen bg-background flex">
-                  <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-                  <div className="flex-1 relative flex flex-col">
-                    <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-                    <main className="flex-1 overflow-auto pt-16">
-                      <div className="container px-4 py-6 md:px-6 md:py-8">
-                        <AnimatePresence mode="wait">
-                          <Clients />
-                        </AnimatePresence>
-                      </div>
-                    </main>
-                  </div>
-                </div>
+                <MainLayout>
+                  <Clients />
+                </MainLayout>
+              } />
+              
+              {/* Client Routes */}
+              <Route path="/clients/new" element={
+                <MainLayout>
+                  <Clients />
+                </MainLayout>
               } />
               
               <Route path="/clients/:id" element={
-                <div className="min-h-screen bg-background flex">
-                  <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-                  <div className="flex-1 relative flex flex-col">
-                    <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-                    <main className="flex-1 overflow-auto pt-16">
-                      <div className="container px-4 py-6 md:px-6 md:py-8">
-                        <AnimatePresence mode="wait">
-                          <ClientDetail />
-                        </AnimatePresence>
-                      </div>
-                    </main>
-                  </div>
-                </div>
+                <MainLayout>
+                  <ClientDetail />
+                </MainLayout>
               } />
               
+              <Route path="/clients/:id/edit" element={
+                <MainLayout>
+                  <Clients />
+                </MainLayout>
+              } />
+              
+              {/* Appointment Routes */}
               <Route path="/appointments" element={
-                <div className="min-h-screen bg-background flex">
-                  <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-                  <div className="flex-1 relative flex flex-col">
-                    <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-                    <main className="flex-1 overflow-auto pt-16">
-                      <div className="container px-4 py-6 md:px-6 md:py-8">
-                        <AnimatePresence mode="wait">
-                          <Appointments />
-                        </AnimatePresence>
-                      </div>
-                    </main>
-                  </div>
-                </div>
+                <MainLayout>
+                  <Appointments />
+                </MainLayout>
+              } />
+              
+              <Route path="/appointments/new" element={
+                <MainLayout>
+                  <Appointments />
+                </MainLayout>
+              } />
+
+              <Route path="/appointments/:id" element={
+                <MainLayout>
+                  <Appointments />
+                </MainLayout>
               } />
               
               <Route path="/clients-overview" element={
-                <div className="min-h-screen bg-background flex">
-                  <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-                  <div className="flex-1 relative flex flex-col">
-                    <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-                    <main className="flex-1 overflow-auto pt-16">
-                      <div className="container px-4 py-6 md:px-6 md:py-8">
-                        <AnimatePresence mode="wait">
-                          <ClientsOverview />
-                        </AnimatePresence>
-                      </div>
-                    </main>
-                  </div>
-                </div>
+                <MainLayout>
+                  <ClientsOverview />
+                </MainLayout>
               } />
               
               <Route path="/whatsapp-reminders" element={
-                <div className="min-h-screen bg-background flex">
-                  <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-                  <div className="flex-1 relative flex flex-col">
-                    <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-                    <main className="flex-1 overflow-auto pt-16">
-                      <div className="container px-4 py-6 md:px-6 md:py-8">
-                        <AnimatePresence mode="wait">
-                          <WhatsAppReminders />
-                        </AnimatePresence>
-                      </div>
-                    </main>
-                  </div>
-                </div>
+                <MainLayout>
+                  <WhatsAppReminders />
+                </MainLayout>
               } />
               
+              {/* Landing Pages */}
+              <Route path="/landing" element={<LandingPage />} />
+              <Route path="/landing/new" element={<NewClientLanding />} />
+              <Route path="/landing/login" element={<ExistingClientLanding />} />
+              
+              {/* 404 Route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
