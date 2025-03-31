@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { format, addDays, isPast, isSameDay } from 'date-fns';
 import { useCrm } from '@/context/CrmContext';
@@ -33,19 +34,19 @@ const Index: React.FC = () => {
   
   return (
     <PageTransition>
-      {/* New Demo Banner */}
-      <div className="w-full bg-core-600 text-white text-center py-3 px-4">
-        <span>
+      {/* Demo Banner - Improved for mobile */}
+      <div className="w-full bg-core-600 text-white px-2 py-3 sm:py-3 sm:px-4">
+        <p className="text-sm sm:text-base text-center">
           Versione DEMO di CoreStudio, per scoprire tutte le funzionalità ad hoc per il tuo studio, 
           visita il <a 
             href="https://corestudiocrm.it" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="underline hover:text-core-200 transition-colors"
+            className="underline font-medium hover:text-core-200 transition-colors"
           >
             sito corestudiocrm.it
           </a> o parla con il tuo consulente CoreStudio.
-        </span>
+        </p>
       </div>
 
       <div className="space-y-6 mt-6">
